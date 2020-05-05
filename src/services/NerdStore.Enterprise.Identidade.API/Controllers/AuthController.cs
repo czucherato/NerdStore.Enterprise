@@ -5,6 +5,7 @@ using NerdStore.Enterprise.Identidade.API.Models;
 
 namespace NerdStore.Enterprise.Identidade.API.Controllers
 {
+    [ApiController]
     [Route("api/identidade")]
     public class AuthController : Controller
     {
