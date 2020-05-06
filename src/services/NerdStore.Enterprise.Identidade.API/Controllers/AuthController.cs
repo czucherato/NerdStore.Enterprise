@@ -13,9 +13,8 @@ using NerdStore.Enterprise.Identidade.API.Extensions;
 
 namespace NerdStore.Enterprise.Identidade.API.Controllers
 {
-    [ApiController]
     [Route("api/identidade")]
-    public class AuthController : Controller
+    public class AuthController : MainController
     {
         public AuthController(
             IOptions<AppSettings> options,
@@ -34,7 +33,7 @@ namespace NerdStore.Enterprise.Identidade.API.Controllers
         [HttpPost("nova-conta")]
         public async Task<ActionResult> Registrar(UsuarioRegistroViewModel parametros)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
             var user = new IdentityUser
             {
                 UserName = parametros.Email,
@@ -43,23 +42,30 @@ namespace NerdStore.Enterprise.Identidade.API.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, parametros.Senha);
-            if (result.Succeeded)
-            {
-                await _signInManager.SignInAsync(user, false);
-                return Ok(await GerarJwt(user.Email));
-            }
+            if (result.Succeeded) return CustomResponse(await GerarJwt(user.Email));
 
-            return BadRequest(result.Errors);
+            foreach (var erro in result.Errors)
+                AdicionarErroProcessamento(erro.Description);
+
+            return CustomResponse();
         }
 
         [HttpPost("autenticar")]
         public async Task<ActionResult> Login(UsuarioLoginViewModel parametros)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+
             var result = await _signInManager.PasswordSignInAsync(parametros.Email, parametros.Senha, false, true);
-            
-            if (result.Succeeded) return Ok(await GerarJwt(parametros.Email));
-            return BadRequest();
+            if (result.Succeeded) return CustomResponse(await GerarJwt(parametros.Email));
+
+            if (result.IsLockedOut)
+            {
+                AdicionarErroProcessamento("Usuário temporariamente bloqueado por tentativas inválidas");
+                return CustomResponse();
+            }
+
+            AdicionarErroProcessamento("Usuário ou senha inválidos");
+            return CustomResponse();
         }
 
         private async Task<UsuarioRespostaLogin> GerarJwt(string email)

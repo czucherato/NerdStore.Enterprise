@@ -17,9 +17,16 @@ namespace NerdStore.Enterprise.Identidade.API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IHostEnvironment hostEnvironment)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(hostEnvironment.ContentRootPath)
+                .AddJsonFile("appsettings.json", true, true)
+                .AddJsonFile($"appsettings.{hostEnvironment.EnvironmentName}.json", true, true)
+                .AddEnvironmentVariables();
+
+            if (hostEnvironment.IsDevelopment()) builder.AddUserSecrets<Startup>();
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -27,7 +34,7 @@ namespace NerdStore.Enterprise.Identidade.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+            services.AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>().AddErrorDescriber<IdentityMensagensPortugues>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
             var appSettingSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingSection);
