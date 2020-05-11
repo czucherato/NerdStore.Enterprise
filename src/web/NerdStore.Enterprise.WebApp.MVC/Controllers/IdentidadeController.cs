@@ -1,11 +1,19 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NerdStore.Enterprise.WebApp.MVC.Models;
+using NerdStore.Enterprise.WebApp.MVC.Services;
 
 namespace NerdStore.Enterprise.WebApp.MVC.Controllers
 {
     public class IdentidadeController : Controller
     {
+        public IdentidadeController(IAutenticacaoService autenticacaoService)
+        {
+            _autenticacaoService = autenticacaoService;
+        }
+
+        private readonly IAutenticacaoService _autenticacaoService;
+
         [HttpGet]
         [Route("nova-conta")]
         public IActionResult Registro()
@@ -19,6 +27,7 @@ namespace NerdStore.Enterprise.WebApp.MVC.Controllers
         {
             if (!ModelState.IsValid) return View(parametros);
             //API - Registro
+            var resposta = await _autenticacaoService.Registro(parametros);
             if (false) return View(parametros);
 
             //Realizar login na APP
@@ -38,6 +47,7 @@ namespace NerdStore.Enterprise.WebApp.MVC.Controllers
         {
             if (!ModelState.IsValid) return View(parametros);
             //API - Login
+            var resposta = await _autenticacaoService.Login(parametros);
             if (false) return View(parametros);
 
             //Realizar login na APP
