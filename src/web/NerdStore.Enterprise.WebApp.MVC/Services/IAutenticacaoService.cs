@@ -5,8 +5,8 @@ namespace NerdStore.Enterprise.WebApp.MVC.Services
 {
     public interface IAutenticacaoService
     {
-        Task<string> Login(UsuarioLoginViewModel parametros);
+        Task<UsuarioRespostaLogin> Login(UsuarioLoginViewModel parametros);
 
-        Task<string> Registro(UsuarioRegistroViewModel parametros);
+        Task<UsuarioRespostaLogin> Registro(UsuarioRegistroViewModel parametros);
     }
 }
