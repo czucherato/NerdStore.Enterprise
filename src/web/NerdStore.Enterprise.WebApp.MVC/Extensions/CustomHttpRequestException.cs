@@ -3,16 +3,16 @@ using System.Net;
 
 namespace NerdStore.Enterprise.WebApp.MVC.Extensions
 {
-    public class CustoHttpRequestException : Exception
+    public class CustomHttpRequestException : Exception
     {
-        public CustoHttpRequestException() {}
+        public CustomHttpRequestException() {}
 
-        public CustoHttpRequestException(HttpStatusCode statusCode)
+        public CustomHttpRequestException(HttpStatusCode statusCode)
         {
             StatusCode = statusCode;
         }
 
-        public CustoHttpRequestException(string message, Exception innerException)
+        public CustomHttpRequestException(string message, Exception innerException)
             : base(message, innerException) {}
 
         public HttpStatusCode StatusCode { get; private set; }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using NerdStore.Enterprise.WebApp.MVC.Extensions;
 
 namespace NerdStore.Enterprise.WebApp.MVC.Configurations
 {
@@ -20,7 +21,8 @@ namespace NerdStore.Enterprise.WebApp.MVC.Configurations
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/erro/500");
+                app.UseStatusCodePagesWithRedirects("/erro/{0}");
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
@@ -29,6 +31,8 @@ namespace NerdStore.Enterprise.WebApp.MVC.Configurations
             app.UseRouting();
 
             app.UseIdentityConfiguration();
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
