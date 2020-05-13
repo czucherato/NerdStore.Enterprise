@@ -42,22 +42,26 @@ namespace NerdStore.Enterprise.WebApp.MVC.Controllers
 
         [HttpGet]
         [Route("login")]
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login(UsuarioLoginViewModel parametros)
+        public async Task<IActionResult> Login(UsuarioLoginViewModel parametros, string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
             if (!ModelState.IsValid) return View(parametros);
 
             var resposta = await _autenticacaoService.Login(parametros);
             if (ResponsePossuiErros(resposta.ResponseResult)) return View(parametros);
 
             await RealizarLogin(resposta);
-            return RedirectToAction("Index", "Home");
+
+            if (string.IsNullOrEmpty(returnUrl)) return RedirectToAction("Index", "Home");
+            return LocalRedirect(returnUrl);
         }
 
         [HttpGet]
