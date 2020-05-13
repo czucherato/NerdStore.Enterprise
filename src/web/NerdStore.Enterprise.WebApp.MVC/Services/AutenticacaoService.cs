@@ -6,7 +6,7 @@ using NerdStore.Enterprise.WebApp.MVC.Models;
 
 namespace NerdStore.Enterprise.WebApp.MVC.Services
 {
-    public class AutenticacaoService : IAutenticacaoService
+    public class AutenticacaoService : Service, IAutenticacaoService
     {
         public AutenticacaoService(HttpClient httpClient)
         {
@@ -25,6 +25,14 @@ namespace NerdStore.Enterprise.WebApp.MVC.Services
             var content = new StringContent(JsonSerializer.Serialize(parametros), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("https://localhost:44330/api/identidade/autenticar", content);
 
+            if (!TratarErrosResponse(response))
+            {
+                return new UsuarioRespostaLogin
+                {
+                    ResponseResult = JsonSerializer.Deserialize<ResponseResult>(await response.Content.ReadAsStringAsync(), _options)
+                };
+            }
+
             return JsonSerializer.Deserialize<UsuarioRespostaLogin>(await response.Content.ReadAsStringAsync(), _options);
         }
 
@@ -32,6 +40,14 @@ namespace NerdStore.Enterprise.WebApp.MVC.Services
         {
             var content = new StringContent(JsonSerializer.Serialize(parametros), Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("https://localhost:44330/api/identidade/nova-conta", content);
+
+            if (!TratarErrosResponse(response))
+            {
+                return new UsuarioRespostaLogin
+                {
+                    ResponseResult = JsonSerializer.Deserialize<ResponseResult>(await response.Content.ReadAsStringAsync(), _options)
+                };
+            }
 
             return JsonSerializer.Deserialize<UsuarioRespostaLogin>(await response.Content.ReadAsStringAsync(), _options);
         }

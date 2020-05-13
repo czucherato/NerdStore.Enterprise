@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace NerdStore.Enterprise.WebApp.MVC.Controllers
 {
-    public class IdentidadeController : Controller
+    public class IdentidadeController : MainController
     {
         public IdentidadeController(IAutenticacaoService autenticacaoService)
         {
@@ -32,12 +32,11 @@ namespace NerdStore.Enterprise.WebApp.MVC.Controllers
         public async Task<IActionResult> Registro(UsuarioRegistroViewModel parametros)
         {
             if (!ModelState.IsValid) return View(parametros);
-            //API - Registro
-            var resposta = await _autenticacaoService.Registro(parametros);
-            await RealizarLogin(resposta);
-            //if (false) return View(parametros);
 
-            //Realizar login na APP
+            var resposta = await _autenticacaoService.Registro(parametros);
+            if (ResponsePossuiErros(resposta.ResponseResult)) return View(parametros);
+
+            await RealizarLogin(resposta);
             return RedirectToAction("Index", "Home");
         }
 
@@ -53,12 +52,11 @@ namespace NerdStore.Enterprise.WebApp.MVC.Controllers
         public async Task<IActionResult> Login(UsuarioLoginViewModel parametros)
         {
             if (!ModelState.IsValid) return View(parametros);
-            //API - Login
-            var resposta = await _autenticacaoService.Login(parametros);
-            await RealizarLogin(resposta);
-            //if (false) return View(parametros);
 
-            //Realizar login na APP
+            var resposta = await _autenticacaoService.Login(parametros);
+            if (ResponsePossuiErros(resposta.ResponseResult)) return View(parametros);
+
+            await RealizarLogin(resposta);
             return RedirectToAction("Index", "Home");
         }
 
@@ -72,8 +70,10 @@ namespace NerdStore.Enterprise.WebApp.MVC.Controllers
         private async Task RealizarLogin(UsuarioRespostaLogin usuario)
         {
             var token = ObterJwtToken(usuario.AccessToken);
-            var claims = new List<Claim>();
-            claims.Add(new Claim("JWT", usuario.AccessToken));
+            var claims = new List<Claim>
+            {
+                new Claim("JWT", usuario.AccessToken)
+            };
             claims.AddRange(token.Claims);
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
