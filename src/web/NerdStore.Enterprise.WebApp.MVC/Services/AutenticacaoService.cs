@@ -1,21 +1,27 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using NerdStore.Enterprise.WebApp.MVC.Models;
+using NerdStore.Enterprise.WebApp.MVC.Extensions;
 
 namespace NerdStore.Enterprise.WebApp.MVC.Services
 {
     public class AutenticacaoService : Service, IAutenticacaoService
     {
-        public AutenticacaoService(HttpClient httpClient)
+        public AutenticacaoService(
+            HttpClient httpClient,
+            IOptions<AppSettings> options)
         {
             _httpClient = httpClient;
+            _httpClient.BaseAddress = new Uri(options.Value.AutenticacaoUrl);
         }
 
         private readonly HttpClient _httpClient;
 
         public async Task<UsuarioRespostaLogin> Login(UsuarioLoginViewModel parametros)
         {
-            var response = await _httpClient.PostAsync("https://localhost:44330/api/identidade/autenticar", ObterConteudo(parametros));
+            var response = await _httpClient.PostAsync("/api/identidade/autenticar", ObterConteudo(parametros));
 
             if (!TratarErrosResponse(response))
             {
@@ -30,7 +36,7 @@ namespace NerdStore.Enterprise.WebApp.MVC.Services
 
         public async Task<UsuarioRespostaLogin> Registro(UsuarioRegistroViewModel parametros)
         {
-            var response = await _httpClient.PostAsync("https://localhost:44330/api/identidade/nova-conta", ObterConteudo(parametros));
+            var response = await _httpClient.PostAsync("/api/identidade/nova-conta", ObterConteudo(parametros));
 
             if (!TratarErrosResponse(response))
             {
