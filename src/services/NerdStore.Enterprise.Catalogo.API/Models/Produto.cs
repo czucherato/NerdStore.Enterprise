@@ -1,9 +1,9 @@
 ﻿using System;
-using NerdStore.Enterprise.Core.Domain_Objects;
+using NerdStore.Enterprise.Core.DomainObjects;
 
 namespace NerdStore.Enterprise.Catalogo.API.Models
 {
-    public class Produto : Entity
+    public class Produto : Entity, IAggregateRoot
     {
         public string Nome { get; set; }
 

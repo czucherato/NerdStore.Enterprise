@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NerdStore.Enterprise.Core.Domain_Objects
+namespace NerdStore.Enterprise.Core.DomainObjects
 {
     public abstract class Entity
     {
