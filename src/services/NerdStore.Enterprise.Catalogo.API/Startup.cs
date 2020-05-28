@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NerdStore.Enterprise.WebAPI.Core.Identidade;
 using NerdStore.Enterprise.Catalogo.API.Configurations;
 
 namespace NerdStore.Enterprise.Catalogo.API
@@ -30,6 +31,7 @@ namespace NerdStore.Enterprise.Catalogo.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddApiConfiguration(Configuration);
+            services.AddJwtConfiguration(Configuration);
             services.AddSwaggerConfiguration();
             services.RegisterServices();
         }

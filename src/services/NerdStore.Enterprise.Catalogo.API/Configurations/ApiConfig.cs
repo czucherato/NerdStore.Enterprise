@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using NerdStore.Enterprise.Catalogo.API.Data;
 using Microsoft.Extensions.DependencyInjection;
+using NerdStore.Enterprise.WebAPI.Core.Identidade;
 
 namespace NerdStore.Enterprise.Catalogo.API.Configurations
 {
@@ -22,6 +23,7 @@ namespace NerdStore.Enterprise.Catalogo.API.Configurations
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseAuthConfiguration();
             app.UseCors("Total");
             app.UseEndpoints(endPoints => endPoints.MapControllers());
         }

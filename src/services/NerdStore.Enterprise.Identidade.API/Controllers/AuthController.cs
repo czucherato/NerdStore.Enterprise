@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using NerdStore.Enterprise.Identidade.API.Models;
-using NerdStore.Enterprise.Identidade.API.Extensions;
+using NerdStore.Enterprise.WebAPI.Core.Identidade;
 
 namespace NerdStore.Enterprise.Identidade.API.Controllers
 {

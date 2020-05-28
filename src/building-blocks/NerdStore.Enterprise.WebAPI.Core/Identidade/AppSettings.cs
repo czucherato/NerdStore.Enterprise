@@ -1,4 +1,4 @@
-﻿namespace NerdStore.Enterprise.Identidade.API.Extensions
+﻿namespace NerdStore.Enterprise.WebAPI.Core.Identidade
 {
     public class AppSettings
     {
