@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace NerdStore.Enterprise.WebApp.MVC.Configurations
 {
-    public static class ItentityConfig
+    public static class IdentityConfig
     {
         public static void AddIdentityConfiguration(this IServiceCollection services)
         {
