@@ -1,18 +1,18 @@
-﻿@model ErrorViewModel
+﻿@model NerdStore.Enterprise.WebApp.MVC.Models.ErrorViewModel
 @{
-    ViewData["Title"] = Model?.Titulo ?? "Erro";
+    ViewData["Title"] = @Model.Titulo;
 }
-@{ 
-    if (Model == null)
-    {
-        <div>
-            <h2>Ooops! Ocorreu um erro,  mas não se preocupe. Nosso time será avisado e será corrigido em breve!</h2>
-        </div>
-    }
-    else
-    {
-        <div>
+<div class="container">
+    <div style="padding-top: 200px; text-align: center">
+        @{
+            if (Model == null)
+            {
+            <h2>Ooops! Ocorreu um erro, mas não se preocupe. Nosso time será avisado e iremos corrigir em breve!</h2>
+            }
+            else
+            {
             <h2>@Html.Raw(Model.Mensagem)</h2>
-        </div>
-    }
-}
+            }
+        }
+    </div>
+</div>

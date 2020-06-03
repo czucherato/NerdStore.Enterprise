@@ -8,29 +8,26 @@ namespace NerdStore.Enterprise.WebApp.MVC.Controllers
     public class CatalogoController : MainController
     {
         public CatalogoController(
-            ICatalogoService catalogoService,
-            ICatalogoServiceRefit catalogoServiceRefit)
+            ICatalogoService catalogoService)
         {
             _catalogoService = catalogoService;
-            _catalogoServiceRefit = catalogoServiceRefit;
         }
 
         private readonly ICatalogoService _catalogoService;
-        private readonly ICatalogoServiceRefit _catalogoServiceRefit;
 
         [HttpGet]
         [Route("")]
         [Route("vitrine")]
         public async Task<IActionResult> Index()
         {
-            return View(await _catalogoServiceRefit.ObterTodos());
+            return View(await _catalogoService.ObterTodos());
         }
 
         [HttpGet]
         [Route("produto-detalhe/{id}")]
         public async Task<IActionResult> ProdutoDetalhe(Guid id)
         {
-            return View(await _catalogoServiceRefit.ObterPorId(id));
+            return View(await _catalogoService.ObterPorId(id));
         }
     }
 }

@@ -4,6 +4,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NerdStore.Enterprise.WebApp.MVC.Extensions;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace NerdStore.Enterprise.WebApp.MVC.Configurations
 {
@@ -24,15 +26,26 @@ namespace NerdStore.Enterprise.WebApp.MVC.Configurations
             else
             {
                 app.UseExceptionHandler("/erro/500");
-                app.UseStatusCodePagesWithRedirects("/erro/{0}");
+                
                 app.UseHsts();
             }
+
+            app.UseStatusCodePagesWithRedirects("/erro/{0}");
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
             app.UseIdentityConfiguration();
+
+            var supportedCultures = new[] { new CultureInfo("pt-BR") };
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("pt-BR"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
 
             app.UseMiddleware<ExceptionMiddleware>();
 
