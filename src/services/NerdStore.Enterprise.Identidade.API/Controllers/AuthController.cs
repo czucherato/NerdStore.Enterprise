@@ -1,4 +1,5 @@
 ﻿using System;
+using EasyNetQ;
 using System.Text;
 using System.Linq;
 using System.Security.Claims;
@@ -11,6 +12,7 @@ using System.IdentityModel.Tokens.Jwt;
 using NerdStore.Enterprise.Identidade.API.Models;
 using NerdStore.Enterprise.WebAPI.Core.Identidade;
 using NerdStore.Enterprise.WebAPI.Core.Controllers;
+using NerdStore.Enterprise.Core.Messages.Integration;
 
 namespace NerdStore.Enterprise.Identidade.API.Controllers
 {
@@ -27,6 +29,7 @@ namespace NerdStore.Enterprise.Identidade.API.Controllers
             _signInManager = signInManager;
         }
 
+        private IBus _bus;
         private readonly AppSettings _appSettings;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
@@ -43,7 +46,11 @@ namespace NerdStore.Enterprise.Identidade.API.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, parametros.Senha);
-            if (result.Succeeded) return CustomResponse(await GerarJwt(user.Email));
+            if (result.Succeeded)
+            {
+                await RegistrarCliente(parametros);
+                return CustomResponse(await GerarJwt(user.Email));
+            }
 
             foreach (var erro in result.Errors)
                 AdicionarErroProcessamento(erro.Description);
@@ -118,6 +125,22 @@ namespace NerdStore.Enterprise.Identidade.API.Controllers
         private static long ToUnixEpochDate(DateTime dateTime)
         {
             return (long)Math.Round((dateTime.ToUniversalTime() - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);
+        }
+
+        private async Task<ResponseMessage> RegistrarCliente(UsuarioRegistroViewModel usuarioRegistro)
+        {
+            var usuario = await _userManager.FindByEmailAsync(usuarioRegistro.Email);
+
+            var usuarioRegistrado = new UsuarioRegistradoIntegrationEvent(
+                Guid.Parse(usuario.Id), 
+                usuarioRegistro.Nome, 
+                usuarioRegistro.Email, 
+                usuarioRegistro.Cpf);
+
+            _bus = RabbitHutch.CreateBus("host=localhost:5672");
+            var sucesso = await _bus.RequestAsync<UsuarioRegistradoIntegrationEvent, ResponseMessage>(usuarioRegistrado);
+
+            return sucesso;
         }
     }
 }
