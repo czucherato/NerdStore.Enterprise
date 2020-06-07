@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using NerdStore.Enterprise.Core.Data;
 using NerdStore.Enterprise.Catalogo.API.Models;
 
 namespace NerdStore.Enterprise.Catalogo.API.Data.Repository
@@ -14,6 +15,8 @@ namespace NerdStore.Enterprise.Catalogo.API.Data.Repository
         }
 
         private readonly CatalogoContext _context;
+
+        public IUnitOfWork UnitOfWork => _context;
 
         public async Task<IEnumerable<Produto>> ObterTodos()
         {

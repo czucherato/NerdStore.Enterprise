@@ -1,9 +1,10 @@
 ﻿using System.Linq;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace NerdStore.Enterprise.Identidade.API.Controllers
+namespace NerdStore.Enterprise.WebAPI.Core.Controllers
 {
     [ApiController]
     public abstract class MainController : Controller
@@ -24,6 +25,16 @@ namespace NerdStore.Enterprise.Identidade.API.Controllers
             var errors = modelState.Values.SelectMany(e => e.Errors);
             foreach (var erro in errors)
                 AdicionarErroProcessamento(erro.ErrorMessage);
+
+            return CustomResponse();
+        }
+
+        protected ActionResult CustomResponse(ValidationResult validationResult)
+        {
+            foreach (var erro in validationResult.Errors)
+            {
+                AdicionarErroProcessamento(erro.ErrorMessage);
+            }
 
             return CustomResponse();
         }

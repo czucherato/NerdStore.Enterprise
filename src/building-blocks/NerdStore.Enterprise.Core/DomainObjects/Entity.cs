@@ -1,10 +1,31 @@
-﻿using System;
+﻿using NerdStore.Enterprise.Core.Messages;
+using System;
+using System.Collections.Generic;
 
 namespace NerdStore.Enterprise.Core.DomainObjects
 {
     public abstract class Entity
     {
         public Guid Id { get; set; }
+
+        private List<Event> _notificacoes;
+        public IReadOnlyCollection<Event> Notificacoes => _notificacoes?.AsReadOnly();
+
+        public void AdicionarEvento(Event @event)
+        {
+            _notificacoes ??= new List<Event>();
+            _notificacoes.Add(@event);
+        }
+
+        public void RemoverEvento(Event @event)
+        {
+            _notificacoes?.Remove(@event);
+        }
+
+        public void LimparEventos()
+        {
+            _notificacoes?.Clear();
+        }
 
         public override bool Equals(object obj)
         {
