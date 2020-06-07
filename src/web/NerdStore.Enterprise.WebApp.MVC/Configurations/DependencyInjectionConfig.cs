@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Polly;
+using System;
+using Polly.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NerdStore.Enterprise.WebApp.MVC.Services;
+using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using NerdStore.Enterprise.WebApp.MVC.Extensions;
 using NerdStore.Enterprise.WebApp.MVC.Services.Handlers;
-using Polly;
-using Polly.Extensions.Http;
 
 namespace NerdStore.Enterprise.WebApp.MVC.Configurations
 {
@@ -43,6 +44,8 @@ namespace NerdStore.Enterprise.WebApp.MVC.Configurations
             //    .AddTypedClient(Refit.RestService.For<ICatalogoServiceRefit>);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IUser, AspNetUser>();
+
+            services.AddSingleton<IValidationAttributeAdapterProvider, CpfValidationAttributeAdapterProvider>();
         }
     }
 }

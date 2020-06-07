@@ -17,4 +17,8 @@
     <PackageReference Include="Refit" Version="5.1.67" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\building-blocks\NerdStore.Enterprise.Core\NerdStore.Enterprise.Core.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,9 +1,20 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using NerdStore.Enterprise.WebApp.MVC.Extensions;
 
 namespace NerdStore.Enterprise.WebApp.MVC.Models
 {
     public class UsuarioRegistroViewModel
     {
+        [DisplayName("Nome Completo")]
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        public string Nome { get; set; }
+
+        [Cpf]
+        [DisplayName("CPF")]
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        public string Cpf { get; set; }
+
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [EmailAddress(ErrorMessage = "O campo {0} está em formato inválido")]
         public string Email { get; set; }
