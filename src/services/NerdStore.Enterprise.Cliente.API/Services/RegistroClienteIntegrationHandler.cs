@@ -1,9 +1,9 @@
 ﻿using System;
-using EasyNetQ;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation.Results;
 using Microsoft.Extensions.Hosting;
+using NerdStore.Enterprise.MessageBus;
 using NerdStore.Enterprise.Core.Mediator;
 using Microsoft.Extensions.DependencyInjection;
 using NerdStore.Enterprise.Core.Messages.Integration;
@@ -13,32 +13,43 @@ namespace NerdStore.Enterprise.Cliente.API.Services
 {
     public class RegistroClienteIntegrationHandler : BackgroundService
     {
-        public RegistroClienteIntegrationHandler(IServiceProvider serviceProvider)
+        public RegistroClienteIntegrationHandler(
+            IMessageBus bus,
+            IServiceProvider serviceProvider)
         {
+            _bus = bus;
             _serviceProvider = serviceProvider;
         }
 
         private readonly IServiceProvider _serviceProvider;
-        private IBus _bus;
+        private readonly IMessageBus _bus;
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _bus = RabbitHutch.CreateBus("host=localhost:5672");
-            _bus.RespondAsync<UsuarioRegistradoIntegrationEvent, ResponseMessage>(async request => new ResponseMessage(await RegistrarCliente(request)));
+            SetResponder();
             return Task.CompletedTask;
         }
 
-        private async Task<ValidationResult> RegistrarCliente(UsuarioRegistradoIntegrationEvent message)
+        private void SetResponder()
         {
-            var clienteCommand = new RegistrarClienteCommand(message.Id, message.Nome, message.Email, message.Cpf);
+            _bus.RespondAsync<UsuarioRegistradoIntegrationEvent, ResponseMessage>(async request => await RegistrarCliente(request));
+            _bus.AdvancedBus.Connected += OnConnected;
+        }
+
+        private void OnConnected(object s, EventArgs e) => SetResponder();
+
+        private async Task<ResponseMessage> RegistrarCliente(UsuarioRegistradoIntegrationEvent message)
+        {
             ValidationResult sucesso;
+            var clienteCommand = new RegistrarClienteCommand(message.Id, message.Nome, message.Email, message.Cpf);
+            
             using (var scope = _serviceProvider.CreateScope())
             {
                 var mediator = scope.ServiceProvider.GetRequiredService<IMediatorHandler>();
                 sucesso = await mediator.EnviarComando(clienteCommand);
             }
 
-            return sucesso;
+            return new ResponseMessage(sucesso);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using EasyNetQ;
 using System.Text;
 using System.Linq;
 using System.Security.Claims;
@@ -9,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using NerdStore.Enterprise.MessageBus;
 using NerdStore.Enterprise.Identidade.API.Models;
 using NerdStore.Enterprise.WebAPI.Core.Identidade;
 using NerdStore.Enterprise.WebAPI.Core.Controllers;
@@ -20,16 +20,18 @@ namespace NerdStore.Enterprise.Identidade.API.Controllers
     public class AuthController : MainController
     {
         public AuthController(
+            IMessageBus bus,
             IOptions<AppSettings> options,
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager)
         {
+            _bus = bus;
             _userManager = userManager;
             _appSettings = options.Value;
             _signInManager = signInManager;
         }
 
-        private IBus _bus;
+        private readonly IMessageBus _bus;
         private readonly AppSettings _appSettings;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
@@ -48,7 +50,13 @@ namespace NerdStore.Enterprise.Identidade.API.Controllers
             var result = await _userManager.CreateAsync(user, parametros.Senha);
             if (result.Succeeded)
             {
-                await RegistrarCliente(parametros);
+                var clienteResult = await RegistrarCliente(parametros);
+                if (!clienteResult.ValidationResult.IsValid)
+                {
+                    await _userManager.DeleteAsync(user);
+                    return CustomResponse(clienteResult.ValidationResult);
+                }
+
                 return CustomResponse(await GerarJwt(user.Email));
             }
 
@@ -137,10 +145,8 @@ namespace NerdStore.Enterprise.Identidade.API.Controllers
                 usuarioRegistro.Email, 
                 usuarioRegistro.Cpf);
 
-            _bus = RabbitHutch.CreateBus("host=localhost:5672");
-            var sucesso = await _bus.RequestAsync<UsuarioRegistradoIntegrationEvent, ResponseMessage>(usuarioRegistrado);
-
-            return sucesso;
+            try { return await _bus.RequestAsync<UsuarioRegistradoIntegrationEvent, ResponseMessage>(usuarioRegistrado); }
+            catch { await _userManager.DeleteAsync(usuario); throw; }
         }
     }
 }

@@ -26,9 +26,9 @@ namespace NerdStore.Enterprise.Identidade.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddApiConfiguration();
-            services.AddIdentityConfiguration(Configuration);
             services.AddSwaggerConfiguration();
-            
+            services.AddIdentityConfiguration(Configuration);
+            services.AddMessageBusConfiguration(Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
