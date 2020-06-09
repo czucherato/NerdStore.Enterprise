@@ -3,9 +3,9 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 
-namespace NerdStore.Enterprise.WebApp.MVC.Extensions
+namespace NerdStore.Enterprise.WebAPI.Core.Usuario
 {
-    public interface IUser
+    public interface IAspNetUser
     {
         string Name { get; }
 

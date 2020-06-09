@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NerdStore.Enterprise.WebApp.MVC.Services;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
+using NerdStore.Enterprise.WebAPI.Core.Usuario;
 using NerdStore.Enterprise.WebApp.MVC.Extensions;
 using NerdStore.Enterprise.WebApp.MVC.Services.Handlers;
 
@@ -43,7 +44,7 @@ namespace NerdStore.Enterprise.WebApp.MVC.Configurations
             //    .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
             //    .AddTypedClient(Refit.RestService.For<ICatalogoServiceRefit>);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddScoped<IUser, AspNetUser>();
+            services.AddScoped<IAspNetUser, Extensions.AspNetUser>();
 
             services.AddSingleton<IValidationAttributeAdapterProvider, CpfValidationAttributeAdapterProvider>();
         }

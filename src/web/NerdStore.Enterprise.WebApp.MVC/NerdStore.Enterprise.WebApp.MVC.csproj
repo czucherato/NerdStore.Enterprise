@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\building-blocks\NerdStore.Enterprise.Core\NerdStore.Enterprise.Core.csproj" />
+    <ProjectReference Include="..\..\building-blocks\NerdStore.Enterprise.WebAPI.Core\NerdStore.Enterprise.WebAPI.Core.csproj" />
   </ItemGroup>
 
 </Project>

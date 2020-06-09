@@ -1,5 +1,6 @@
-﻿@using NerdStore.Enterprise.WebApp.MVC.Extensions
-@inject IUser AppUser
+﻿@using NerdStore.Enterprise.WebAPI.Core.Usuario
+@using NerdStore.Enterprise.WebApp.MVC.Extensions
+@inject IAspNetUser AppUser
 
 @if (AppUser.EstaAutenticado())
 {

@@ -3,18 +3,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Http.Headers;
 using System.Collections.Generic;
-using NerdStore.Enterprise.WebApp.MVC.Extensions;
+using NerdStore.Enterprise.WebAPI.Core.Usuario;
 
 namespace NerdStore.Enterprise.WebApp.MVC.Services.Handlers
 {
     public class HttpClientAuthorizationDelegatingHandler : DelegatingHandler
     {
-        public HttpClientAuthorizationDelegatingHandler(IUser user)
+        public HttpClientAuthorizationDelegatingHandler(IAspNetUser user)
         {
             _user = user;
         }
 
-        private readonly IUser _user;
+        private readonly IAspNetUser _user;
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
