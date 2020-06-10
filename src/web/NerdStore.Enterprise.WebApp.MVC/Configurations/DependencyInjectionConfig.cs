@@ -32,6 +32,8 @@ namespace NerdStore.Enterprise.WebApp.MVC.Configurations
 
             services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
             services.AddHttpClient<IAutenticacaoService, AutenticacaoService>();
+            services.AddHttpClient<ICarrinhoService, CarrinhoService>()
+                .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
             services.AddHttpClient<ICatalogoService, CatalogoService>()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                 //.AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(600)));
@@ -44,7 +46,7 @@ namespace NerdStore.Enterprise.WebApp.MVC.Configurations
             //    .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
             //    .AddTypedClient(Refit.RestService.For<ICatalogoServiceRefit>);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddScoped<IAspNetUser, Extensions.AspNetUser>();
+            services.AddScoped<IAspNetUser, AspNetUser>();
 
             services.AddSingleton<IValidationAttributeAdapterProvider, CpfValidationAttributeAdapterProvider>();
         }

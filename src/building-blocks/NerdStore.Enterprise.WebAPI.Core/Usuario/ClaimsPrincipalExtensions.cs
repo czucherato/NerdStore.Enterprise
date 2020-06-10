@@ -8,14 +8,14 @@ namespace NerdStore.Enterprise.WebAPI.Core.Usuario
         public static string GetUserId(this ClaimsPrincipal principal)
         {
             if (principal == null) throw new ArgumentException(nameof(principal));
-            var claim = principal.FindFirst("sub");
+            var claim = principal.FindFirst("sub") ?? principal.FindFirst(ClaimTypes.NameIdentifier);
             return claim?.Value;
         }
 
         public static string GetUserEmail(this ClaimsPrincipal principal)
         {
             if (principal == null) throw new ArgumentException(nameof(principal));
-            var claim = principal.FindFirst("email");
+            var claim = principal.FindFirst("email") ?? principal.FindFirst(ClaimTypes.Email);
             return claim?.Value;
         }
 

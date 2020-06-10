@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using NerdStore.Enterprise.WebApp.MVC.Extensions;
+using NerdStore.Enterprise.WebApp.MVC.Models;
 
 namespace NerdStore.Enterprise.WebApp.MVC.Services
 {
@@ -43,6 +44,11 @@ namespace NerdStore.Enterprise.WebApp.MVC.Services
 
             response.EnsureSuccessStatusCode();
             return true;
+        }
+
+        protected ResponseResult RetornoOk()
+        {
+            return new ResponseResult();
         }
     }
 }

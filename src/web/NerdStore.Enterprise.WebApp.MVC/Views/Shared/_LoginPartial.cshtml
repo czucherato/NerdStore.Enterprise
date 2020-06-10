@@ -1,9 +1,13 @@
-﻿@using NerdStore.Enterprise.WebAPI.Core.Usuario
-@using NerdStore.Enterprise.WebApp.MVC.Extensions
+﻿@using NerdStore.Enterprise.WebApp.MVC.Extensions
+@using NerdStore.Enterprise.WebAPI.Core.Usuario
 @inject IAspNetUser AppUser
 
 @if (AppUser.EstaAutenticado())
 {
+<div>
+    <vc:carrinho />
+</div>
+<div>
     <div class="dropdown d-inline-block">
         <a href="#" class="icontext dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
             <img class="icon icon-sm rounded-circle" src="https://s.gravatar.com/avatar/@this.HashEmailForGravatar(AppUser.ObterUserEmail())?d=mm&s=45">
@@ -15,14 +19,15 @@
             <a class="dropdown-item" asp-controller="Identidade" asp-action="Logout">Sair</a>
         </div>
     </div>
+</div>
 }
 else
 {
-    <div class="widget-header">
-        <small class="title text-muted">Bem vindo!</small>
-        <div>
-            <a asp-controller="Identidade" asp-action="Registro">Crie sua conta</a> <span> | </span>
-            <a asp-controller="Identidade" asp-action="Login"> Login</a>
-        </div>
+<div class="widget-header">
+    <small class="title text-muted">Bem vindo!</small>
+    <div>
+        <a asp-controller="Identidade" asp-action="Registro">Crie sua conta</a> <span> | </span>
+        <a asp-controller="Identidade" asp-action="Login"> Login</a>
     </div>
+</div>
 }

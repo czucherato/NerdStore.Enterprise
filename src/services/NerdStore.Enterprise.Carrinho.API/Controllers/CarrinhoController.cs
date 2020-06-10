@@ -28,7 +28,7 @@ namespace NerdStore.Enterprise.Carrinho.API.Controllers
         [HttpGet("carrinho")]
         public async Task<CarrinhoCliente> ObterCarrinho()
         {
-            return await ObterCarrinho() ?? new CarrinhoCliente();
+            return await ObterCarrinhoCliente() ?? new CarrinhoCliente();
         }
 
         [HttpPost("carrinho")]
@@ -39,7 +39,6 @@ namespace NerdStore.Enterprise.Carrinho.API.Controllers
             if (carrinho == null) ManipularNovoCarrinho(item);
             else ManipularCarrinhoExistente(carrinho, item);
 
-            ValidarCarrinho(carrinho);
             if (!OperacaoValida()) return CustomResponse();
 
             await PersistirDados();
@@ -80,7 +79,7 @@ namespace NerdStore.Enterprise.Carrinho.API.Controllers
             ValidarCarrinho(carrinho);
             if (!OperacaoValida()) return CustomResponse();
 
-            _context.CarrinhoItens.Update(itemCarrinho);
+            _context.CarrinhoItens.Remove(itemCarrinho);
             _context.CarrinhoCliente.Update(carrinho);
 
             await PersistirDados();
@@ -99,6 +98,8 @@ namespace NerdStore.Enterprise.Carrinho.API.Controllers
         {
             var carrinho = new CarrinhoCliente(_user.ObterUserId());
             carrinho.AdicionarItem(item);
+
+            ValidarCarrinho(carrinho);
             _context.CarrinhoCliente.Add(carrinho);
         }
 
@@ -106,6 +107,7 @@ namespace NerdStore.Enterprise.Carrinho.API.Controllers
         {
             var produtoItemExistente = carrinho.CarrinhoItemExistente(item);
             carrinho.AdicionarItem(item);
+            ValidarCarrinho(carrinho);
 
             if (produtoItemExistente) _context.CarrinhoItens.Update(carrinho.ObterPorProdutoId(item.ProdutoId));
             else _context.CarrinhoItens.Add(item);
