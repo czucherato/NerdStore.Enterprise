@@ -18,7 +18,7 @@ namespace NerdStore.Enterprise.WebApp.MVC.Configurations
         {
             services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
             services.AddHttpClient<IAutenticacaoService, AutenticacaoService>();
-            services.AddHttpClient<ICarrinhoService, CarrinhoService>()
+            services.AddHttpClient<IComprasBffService, ComprasBffService>()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
             services.AddHttpClient<ICatalogoService, CatalogoService>()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()

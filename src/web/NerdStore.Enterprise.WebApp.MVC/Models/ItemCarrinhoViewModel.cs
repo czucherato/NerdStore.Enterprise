@@ -2,7 +2,7 @@
 
 namespace NerdStore.Enterprise.WebApp.MVC.Models
 {
-    public class ItemProdutoViewModel
+    public class ItemCarrinhoViewModel
     {
         public Guid ProdutoId { get; set; }
 

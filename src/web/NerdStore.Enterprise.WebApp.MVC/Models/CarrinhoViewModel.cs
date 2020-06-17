@@ -6,6 +6,6 @@ namespace NerdStore.Enterprise.WebApp.MVC.Models
     {
         public decimal ValorTotal { get; set; }
 
-        public List<ItemProdutoViewModel> Itens { get; set; } = new List<ItemProdutoViewModel>();
+        public List<ItemCarrinhoViewModel> Itens { get; set; } = new List<ItemCarrinhoViewModel>();
     }
 }

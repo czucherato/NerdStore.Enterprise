@@ -5,13 +5,15 @@ using NerdStore.Enterprise.Core.Communication;
 
 namespace NerdStore.Enterprise.WebApp.MVC.Services
 {
-    public interface ICarrinhoService
+    public interface IComprasBffService
     {
         Task<CarrinhoViewModel> ObterCarrinho();
 
-        Task<ResponseResult> AdicionarItemCarrinho(ItemProdutoViewModel produto);
+        Task<int> ObterQuantidadeCarrinho();
 
-        Task<ResponseResult> AtualizarItemCarrinho(Guid produtoId, ItemProdutoViewModel produto);
+        Task<ResponseResult> AdicionarItemCarrinho(ItemCarrinhoViewModel produto);
+
+        Task<ResponseResult> AtualizarItemCarrinho(Guid produtoId, ItemCarrinhoViewModel produto);
 
         Task<ResponseResult> RemoverItemCarrinho(Guid produtoId);
     }
