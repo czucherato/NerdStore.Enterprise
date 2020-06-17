@@ -1,4 +1,8 @@
-﻿namespace NerdStore.Enterprise.WebApp.MVC.Models
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace NerdStore.Enterprise.Core.Communication
 {
     public class ResponseResult
     {

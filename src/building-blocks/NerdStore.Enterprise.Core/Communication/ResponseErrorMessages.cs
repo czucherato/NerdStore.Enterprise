@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NerdStore.Enterprise.WebApp.MVC.Models
+namespace NerdStore.Enterprise.Core.Communication
 {
     public class ResponseErrorMessages
     {

@@ -1,6 +1,5 @@
 ﻿using Polly;
 using System;
-using Polly.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +7,7 @@ using NerdStore.Enterprise.WebApp.MVC.Services;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using NerdStore.Enterprise.WebAPI.Core.Usuario;
 using NerdStore.Enterprise.WebApp.MVC.Extensions;
+using NerdStore.Enterprise.WebAPI.Core.Extensions;
 using NerdStore.Enterprise.WebApp.MVC.Services.Handlers;
 
 namespace NerdStore.Enterprise.WebApp.MVC.Configurations
@@ -16,20 +16,6 @@ namespace NerdStore.Enterprise.WebApp.MVC.Configurations
     {
         public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
         {
-            var retryWaitPolicy = HttpPolicyExtensions
-                .HandleTransientHttpError()
-                .WaitAndRetryAsync(new[]
-                {
-                    TimeSpan.FromSeconds(1),
-                    TimeSpan.FromSeconds(5),
-                    TimeSpan.FromSeconds(10)
-                }, (outcome, timespan, retryCount, context) => 
-                {
-                    Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.WriteLine($"Tentando pela {retryCount} vez!");
-                    Console.ForegroundColor = ConsoleColor.White;
-                });
-
             services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
             services.AddHttpClient<IAutenticacaoService, AutenticacaoService>();
             services.AddHttpClient<ICarrinhoService, CarrinhoService>()
@@ -37,7 +23,7 @@ namespace NerdStore.Enterprise.WebApp.MVC.Configurations
             services.AddHttpClient<ICatalogoService, CatalogoService>()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                 //.AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(600)));
-                .AddPolicyHandler(retryWaitPolicy)
+                .AddPolicyHandler(PollyExtensions.EsperarTentar())
                 .AddTransientHttpErrorPolicy(p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
             //services.AddHttpClient("Refit", options =>
             //{

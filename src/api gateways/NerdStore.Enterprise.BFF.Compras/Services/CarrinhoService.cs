@@ -2,17 +2,17 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
-using NerdStore.Enterprise.WebApp.MVC.Models;
+using NerdStore.Enterprise.BFF.Compras.Models;
 using NerdStore.Enterprise.Core.Communication;
-using NerdStore.Enterprise.WebApp.MVC.Extensions;
+using NerdStore.Enterprise.BFF.Compras.Extensions;
 
-namespace NerdStore.Enterprise.WebApp.MVC.Services
+namespace NerdStore.Enterprise.BFF.Compras.Services
 {
     public class CarrinhoService : Service, ICarrinhoService
     {
         public CarrinhoService(
             HttpClient httpClient,
-            IOptions<AppSettings> settings)
+            IOptions<AppServiceSettings> settings)
         {
             _httpClient = httpClient;
             _httpClient.BaseAddress = new Uri(settings.Value.CarrinhoUrl);
@@ -20,14 +20,14 @@ namespace NerdStore.Enterprise.WebApp.MVC.Services
 
         private readonly HttpClient _httpClient;
 
-        public async Task<CarrinhoViewModel> ObterCarrinho()
+        public async Task<CarrinhoDTO> ObterCarrinho()
         {
             var response = await _httpClient.GetAsync("/carrinho/");
             TratarErrosResponse(response);
-            return await DeserializarObjetoResponse<CarrinhoViewModel>(response);
+            return await DeserializarObjetoResponse<CarrinhoDTO>(response);
         }
 
-        public async Task<ResponseResult> AdicionarItemCarrinho(ItemProdutoViewModel produto)
+        public async Task<ResponseResult> AdicionarItemCarrinho(ItemCarrinhoDTO produto)
         {
             var itemContent = ObterConteudo(produto);
             var response = await _httpClient.PostAsync("/carrinho/", itemContent);
@@ -35,7 +35,7 @@ namespace NerdStore.Enterprise.WebApp.MVC.Services
             return RetornoOk();
         }
 
-        public async Task<ResponseResult> AtualizarItemCarrinho(Guid produtoId, ItemProdutoViewModel produto)
+        public async Task<ResponseResult> AtualizarItemCarrinho(Guid produtoId, ItemCarrinhoDTO produto)
         {
             var itemContent = ObterConteudo(produto);
             var response = await _httpClient.PutAsync($"/carrinho/{produto.ProdutoId}", itemContent);

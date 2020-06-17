@@ -1,11 +1,11 @@
-﻿using System.Text;
+﻿using System.Net;
+using System.Text;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using NerdStore.Enterprise.Core.Communication;
-using NerdStore.Enterprise.WebApp.MVC.Extensions;
 
-namespace NerdStore.Enterprise.WebApp.MVC.Services
+namespace NerdStore.Enterprise.BFF.Compras.Services
 {
     public abstract class Service
     {
@@ -31,16 +31,7 @@ namespace NerdStore.Enterprise.WebApp.MVC.Services
 
         protected bool TratarErrosResponse(HttpResponseMessage response)
         {
-            switch ((int)response.StatusCode)
-            {
-                case 401:
-                case 403:
-                case 404:
-                case 500:
-                    throw new CustomHttpRequestException(response.StatusCode);
-                case 400:
-                    return false;
-            }
+            if (response.StatusCode == HttpStatusCode.BadRequest) return false;
 
             response.EnsureSuccessStatusCode();
             return true;

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using NerdStore.Enterprise.WebApp.MVC.Models;
+using NerdStore.Enterprise.Core.Communication;
 
 namespace NerdStore.Enterprise.WebApp.MVC.Controllers
 {

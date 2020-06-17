@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>f42476fb-dd6b-458c-a0db-24c44480828d</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..\..</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
+	  <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="3.1.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\building-blocks\NerdStore.Enterprise.Core\NerdStore.Enterprise.Core.csproj" />
+    <ProjectReference Include="..\..\building-blocks\NerdStore.Enterprise.MessageBus\NerdStore.Enterprise.MessageBus.csproj" />
+    <ProjectReference Include="..\..\building-blocks\NerdStore.Enterprise.WebAPI.Core\NerdStore.Enterprise.WebAPI.Core.csproj" />
+  </ItemGroup>
+
+
+</Project>

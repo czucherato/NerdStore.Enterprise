@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using NerdStore.Enterprise.WebApp.MVC.Models;
+using NerdStore.Enterprise.Core.Communication;
 using NerdStore.Enterprise.WebApp.MVC.Extensions;
 
 namespace NerdStore.Enterprise.WebApp.MVC.Services
