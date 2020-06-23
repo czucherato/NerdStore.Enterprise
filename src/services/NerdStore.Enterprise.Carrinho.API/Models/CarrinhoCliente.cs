@@ -26,6 +26,12 @@ namespace NerdStore.Enterprise.Carrinho.API.Models
 
         public List<CarrinhoItem> Itens { get; set; } = new List<CarrinhoItem>();
 
+        public bool VoucherUtilizado { get; set; }
+
+        public decimal Desconto { get; set; }
+
+        public Voucher Voucher { get; set; }
+
         public ValidationResult ValidationResult { get; set; }
 
         internal bool EhValido()
@@ -36,6 +42,41 @@ namespace NerdStore.Enterprise.Carrinho.API.Models
             return ValidationResult.IsValid;
         }
 
+        public void AplicarVoucher(Voucher voucher)
+        {
+            Voucher = voucher;
+            VoucherUtilizado = true;
+            CalcularValorCarrinho();
+        }
+
+        private void CalcularValorTotalDesconto()
+        {
+            if (!VoucherUtilizado) return;
+
+            decimal desconto = 0;
+            var valor = ValorTotal;
+
+            if (Voucher.TipoDesconto == TipoDescontoVoucher.Porcentagem)
+            {
+                if (Voucher.Percentual.HasValue)
+                {
+                    desconto = (valor * Voucher.Percentual.Value) / 100;
+                    valor -= desconto;
+                }
+            }
+            else
+            {
+                if (Voucher.ValorDesconto.HasValue)
+                {
+                    desconto = Voucher.ValorDesconto.Value;
+                    valor -= desconto;
+                }
+            }
+
+            ValorTotal = valor < 0 ? 0 : valor;
+            Desconto = desconto;
+        }
+
         internal bool CarrinhoItemExistente(CarrinhoItem item)
         {
             return Itens.Any(p => p.ProdutoId == item.ProdutoId);
@@ -44,6 +85,7 @@ namespace NerdStore.Enterprise.Carrinho.API.Models
         internal void CalcularValorCarrinho()
         {
             ValorTotal = Itens.Sum(p => p.CalcularValor());
+            CalcularValorTotalDesconto();
         }
 
         internal CarrinhoItem ObterPorProdutoId(Guid produtoId)

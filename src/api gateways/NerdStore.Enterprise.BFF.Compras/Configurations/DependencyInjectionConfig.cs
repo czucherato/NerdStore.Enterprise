@@ -13,6 +13,9 @@ namespace NerdStore.Enterprise.BFF.Compras.Configurations
     {
         public static void RegisterServices(this IServiceCollection services)
         {
+            services
+                .AddHttpClient<IPedidoService, PedidoService>()
+                .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
             services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
             services
                 .AddHttpClient<ICarrinhoService, CarrinhoService>()

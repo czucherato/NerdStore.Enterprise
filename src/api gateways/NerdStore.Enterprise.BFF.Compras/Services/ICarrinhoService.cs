@@ -13,6 +13,8 @@ namespace NerdStore.Enterprise.BFF.Compras.Services
 
         Task<ResponseResult> AtualizarItemCarrinho(Guid produtoId, ItemCarrinhoDTO produto);
 
+        Task<ResponseResult> AplicarVoucherCarrinho(VoucherDTO voucher);
+
         Task<ResponseResult> RemoverItemCarrinho(Guid produtoId);
     }
 }

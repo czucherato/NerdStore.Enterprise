@@ -12,12 +12,17 @@ namespace NerdStore.Enterprise.BFF.Compras.Controllers
     [Authorize]
     public class CarrinhoController : MainController
     {
-        public CarrinhoController(ICatalogoService catalogoService, ICarrinhoService carrinhoService)
+        public CarrinhoController(
+            IPedidoService pedidoService,
+            ICatalogoService catalogoService, 
+            ICarrinhoService carrinhoService)
         {
+            _pedidoService = pedidoService;
             _catalogoService = catalogoService;
             _carrinhoService = carrinhoService;
         }
 
+        private readonly IPedidoService _pedidoService;
         private readonly ICatalogoService _catalogoService;
         private readonly ICarrinhoService _carrinhoService;
 
@@ -83,6 +88,21 @@ namespace NerdStore.Enterprise.BFF.Compras.Controllers
 
             var resposta = await _carrinhoService.RemoverItemCarrinho(produto.Id);
 
+            return CustomResponse(resposta);
+        }
+
+        [HttpPost]
+        [Route("compras/carrinho/aplicar-voucher")]
+        public async Task<IActionResult> AplicarVoucher([FromBody] string voucherCodigo)
+        {
+            var voucher = await _pedidoService.ObterVoucherPorCodigo(voucherCodigo);
+            if (voucher == null)
+            {
+                AdicionarErroProcessamento("Voucher inválido ou não encontrado");
+                return CustomResponse();
+            }
+
+            var resposta = await _carrinhoService.AplicarVoucherCarrinho(voucher);
             return CustomResponse(resposta);
         }
 
