@@ -5,7 +5,9 @@ namespace NerdStore.Enterprise.Cliente.API.Models
 {
     public class Endereco : Entity
     {
-        public Endereco(string logradouro, string numero, string complemento, string bairro, string cep, string cidade, string estado)
+        protected Endereco() { }
+
+        public Endereco(string logradouro, string numero, string complemento, string bairro, string cep, string cidade, string estado, Guid clienteId)
         {
             Logradouro = logradouro;
             Numero = numero;
@@ -14,6 +16,7 @@ namespace NerdStore.Enterprise.Cliente.API.Models
             Cep = cep;
             Cidade = cidade;
             Estado = estado;
+            ClienteId = clienteId;
         }
 
         public string Logradouro { get; set; }

@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.35" />
     <PackageReference Include="MediatR" Version="8.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.5">
@@ -19,12 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Commands\" />
-    <Folder Include="Application\Events\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\building-blocks\NerdStore.Enterprise.Core\NerdStore.Enterprise.Core.csproj" />
+    <ProjectReference Include="..\..\building-blocks\NerdStore.Enterprise.MessageBus\NerdStore.Enterprise.MessageBus.csproj" />
     <ProjectReference Include="..\..\building-blocks\NerdStore.Enterprise.WebAPI.Core\NerdStore.Enterprise.WebAPI.Core.csproj" />
     <ProjectReference Include="..\NerdStore.Enterprise.Pedido.Infra\NerdStore.Enterprise.Pedido.Infra.csproj" />
   </ItemGroup>

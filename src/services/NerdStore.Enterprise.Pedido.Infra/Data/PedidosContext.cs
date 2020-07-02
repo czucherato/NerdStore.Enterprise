@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,7 @@ namespace NerdStore.Enterprise.Pedido.Infra.Data
         public PedidosContext(
             IMediatorHandler mediatorHandler,
             DbContextOptions<PedidosContext> options)
-            : base(options) 
+            : base(options)
         {
             _mediatorHandler = mediatorHandler;
         }
@@ -23,6 +24,10 @@ namespace NerdStore.Enterprise.Pedido.Infra.Data
         private readonly IMediatorHandler _mediatorHandler;
 
         public DbSet<Voucher> Vouchers { get; set; }
+
+        public DbSet<Domain.Pedidos.Pedido> Pedidos { get; set; }
+
+        public DbSet<Domain.Pedidos.PedidoItem> PedidoItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,10 +39,31 @@ namespace NerdStore.Enterprise.Pedido.Infra.Data
                 property.SetColumnType("varchar(100)");
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(PedidosContext).Assembly);
+
+            foreach (var relationship in modelBuilder.Model.GetEntityTypes()
+                .SelectMany(e => e.GetForeignKeys())) relationship.DeleteBehavior = DeleteBehavior.ClientSetNull;
+
+            modelBuilder.HasSequence<int>("MinhaSequencia").StartsAt(1000).IncrementsBy(1);
+
+            base.OnModelCreating(modelBuilder);
         }
 
         public async Task<bool> Commit()
         {
+            foreach (var entry in ChangeTracker.Entries()
+                .Where(entry => entry.Entity.GetType().GetProperty("DataCadastro") != null))
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    entry.Property("DataCadastro").CurrentValue = DateTime.Now;
+                }
+
+                if (entry.State == EntityState.Modified)
+                {
+                    entry.Property("DataCadastro").IsModified = false;
+                }
+            }
+
             var sucesso = await base.SaveChangesAsync() > 0;
             if (sucesso) await _mediatorHandler.PublicarEventos(this);
 

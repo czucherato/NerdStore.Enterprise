@@ -16,6 +16,11 @@ namespace NerdStore.Enterprise.Pedido.Infra.Data.Repository
 
         public IUnitOfWork UnitOfWork => _context;
 
+        public void Atualizar(Voucher voucher)
+        {
+            _context.Update(voucher);
+        }
+
         public async Task<Voucher> ObterVoucherPorCodigo(string codigo)
         {
             return await _context.Vouchers.FirstOrDefaultAsync(p => p.Codigo == codigo);

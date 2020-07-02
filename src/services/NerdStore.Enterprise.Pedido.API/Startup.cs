@@ -1,11 +1,11 @@
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NerdStore.Enterprise.Pedido.API.Configurations;
-using MediatR;
 using NerdStore.Enterprise.WebAPI.Core.Identidade;
+using NerdStore.Enterprise.Pedido.API.Configurations;
 
 namespace NerdStore.Enterprise.Pedido.API
 {
@@ -31,6 +31,7 @@ namespace NerdStore.Enterprise.Pedido.API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMessageBusConfiguration(Configuration);
             services.AddApiConfiguration(Configuration);
             services.AddJwtConfiguration(Configuration);
             services.AddMediatR(typeof(Startup));

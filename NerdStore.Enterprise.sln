@@ -57,9 +57,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Compras", "Compras", "{37E2
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NerdStore.Enterprise.BFF.Compras", "src\api gateways\NerdStore.Enterprise.BFF.Compras\NerdStore.Enterprise.BFF.Compras.csproj", "{318CC4B2-A533-48F5-B840-ADAEA7AB2D43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdStore.Enterprise.Pedido.Domain", "src\services\NerdStore.Enterprise.Pedido.Domain\NerdStore.Enterprise.Pedido.Domain.csproj", "{EDB826B9-4D17-4E0A-8B9B-24F6E369F1EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NerdStore.Enterprise.Pedido.Domain", "src\services\NerdStore.Enterprise.Pedido.Domain\NerdStore.Enterprise.Pedido.Domain.csproj", "{EDB826B9-4D17-4E0A-8B9B-24F6E369F1EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdStore.Enterprise.Pedido.Infra", "src\services\NerdStore.Enterprise.Pedido.Infra\NerdStore.Enterprise.Pedido.Infra.csproj", "{E0DEBD7A-EF7A-4D98-A000-00935A9BBC10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NerdStore.Enterprise.Pedido.Infra", "src\services\NerdStore.Enterprise.Pedido.Infra\NerdStore.Enterprise.Pedido.Infra.csproj", "{E0DEBD7A-EF7A-4D98-A000-00935A9BBC10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

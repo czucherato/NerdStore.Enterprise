@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using NerdStore.Enterprise.Core.Data;
 
@@ -6,10 +7,12 @@ namespace NerdStore.Enterprise.Cliente.API.Models
 {
     public interface IClienteRepository : IRepository<Cliente>
     {
-        Task<Cliente> ObterPorCpf(string cpf);
+        void Adicionar(Cliente cliente);
 
         Task<IEnumerable<Cliente>> ObterTodos();
+        Task<Cliente> ObterPorCpf(string cpf);
 
-        void Adicionar(Cliente cliente);
+        void AdicionarEndereco(Endereco endereco);
+        Task<Endereco> ObterEnderecoPorId(Guid id);
     }
 }

@@ -30,6 +30,7 @@ namespace NerdStore.Enterprise.Carrinho.API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMessageBusConfiguration(Configuration);
             services.AddApiConfiguration(Configuration);
             services.AddJwtConfiguration(Configuration);
             services.AddSwaggerConfiguration();

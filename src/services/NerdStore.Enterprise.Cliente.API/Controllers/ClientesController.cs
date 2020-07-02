@@ -1,33 +1,41 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NerdStore.Enterprise.Core.Mediator;
 using Microsoft.AspNetCore.Authorization;
+using NerdStore.Enterprise.Cliente.API.Models;
+using NerdStore.Enterprise.WebAPI.Core.Usuario;
 using NerdStore.Enterprise.WebAPI.Core.Controllers;
 using NerdStore.Enterprise.Cliente.API.Application.Commands;
-using System.Threading.Tasks;
 
 namespace NerdStore.Enterprise.Cliente.API.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class ClientesController : MainController
     {
-        public ClientesController(IMediatorHandler mediatorHandler)
+        private readonly IClienteRepository _clienteRepository;
+        private readonly IMediatorHandler _mediator;
+        private readonly IAspNetUser _user;
+
+        public ClientesController(IClienteRepository clienteRepository, IMediatorHandler mediator, IAspNetUser user)
         {
-            _mediatorHandler = mediatorHandler;
+            _clienteRepository = clienteRepository;
+            _mediator = mediator;
+            _user = user;
         }
 
-        private readonly IMediatorHandler _mediatorHandler;
-
-        [HttpGet("clientes")]
-        public async Task<IActionResult> Index()
+        [HttpGet("cliente/endereco")]
+        public async Task<IActionResult> ObterEndereco()
         {
-            var resultado = await _mediatorHandler.EnviarComando(new RegistrarClienteCommand(
-                Guid.NewGuid(),
-                "Carlos Alberto Zucherato",
-                "carlos.zucheratto@gmail.com",
-                "22338338804"));
+            var endereco = await _clienteRepository.ObterEnderecoPorId(_user.ObterUserId());
 
-            return CustomResponse(resultado);
+            return endereco == null ? NotFound() : CustomResponse(endereco);
+        }
+
+        [HttpPost("cliente/endereco")]
+        public async Task<IActionResult> AdicionarEndereco(AdicionarEnderecoCommand endereco)
+        {
+            endereco.ClienteId = _user.ObterUserId();
+            return CustomResponse(await _mediator.EnviarComando(endereco));
         }
     }
 }
