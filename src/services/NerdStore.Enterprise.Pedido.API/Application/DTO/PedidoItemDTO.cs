@@ -19,7 +19,7 @@ namespace NerdStore.Enterprise.Pedido.API.Application.DTO
 
         public static PedidoItem ParaPedidoItem(PedidoItemDTO pedidoItemDTO)
         {
-            return new PedidoItem(pedidoItemDTO.PedidoId, pedidoItemDTO.Nome, pedidoItemDTO.Quantidade, pedidoItemDTO.Valor, pedidoItemDTO.Imagem);
+            return new PedidoItem(pedidoItemDTO.ProdutoId, pedidoItemDTO.Nome, pedidoItemDTO.Quantidade, pedidoItemDTO.Valor, pedidoItemDTO.Imagem);
         }
     }
 }

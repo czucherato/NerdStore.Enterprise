@@ -27,10 +27,10 @@ namespace NerdStore.Enterprise.Pedido.API.Application.Queries
                                 INNER JOIN PEDIDOITEMS PIT ON P.ID = PIT.PEDIDOID
                                 WHERE P.CLIENTEID = @clienteId
                                 AND P.DATACADASTRO between DATEADD(minute, -3, GETDATE()) and DATEADD(minute, 0, GETDATE())
-                                ORDER BY P.DATACADASTRI DESC";
+                                ORDER BY P.DATACADASTRO DESC";
 
             var pedido = await _pedidoRepository.ObterConexao()
-                .QueryAsync<dynamic>(sql, new { clientId });
+                .QueryAsync<dynamic>(sql, new { clienteId = clientId });
 
             return MapearPedido(pedido);
         }

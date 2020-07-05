@@ -18,10 +18,22 @@ namespace NerdStore.Enterprise.WebApp.MVC.Extensions
         public async Task InvokeAsync(HttpContext context)
         {
             try { await _next(context); }
-            catch (CustomHttpRequestException ex) { HandleRequestExceptionAsync(context, ex.StatusCode); }
-            catch (ValidationApiException ex) { HandleRequestExceptionAsync(context, ex.StatusCode); }
-            catch (ApiException ex) { HandleRequestExceptionAsync(context, ex.StatusCode); }
-            catch (BrokenCircuitException) { HandleCircuitBreakerExceptionAsync(context); }
+            catch (CustomHttpRequestException ex) 
+            { 
+                HandleRequestExceptionAsync(context, ex.StatusCode); 
+            }
+            catch (ValidationApiException ex) 
+            {
+                HandleRequestExceptionAsync(context, ex.StatusCode); 
+            }
+            catch (ApiException ex) 
+            {
+                HandleRequestExceptionAsync(context, ex.StatusCode); 
+            }
+            catch (BrokenCircuitException) 
+            { 
+                HandleCircuitBreakerExceptionAsync(context); 
+            }
         }
 
         private static void HandleRequestExceptionAsync(HttpContext context, HttpStatusCode statusCode)
