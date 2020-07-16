@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Security.Cryptography;
+﻿using System.IO;
 using System.Text;
+using System.Security.Cryptography;
 
 namespace NerdStore.Enterprise.Pagamento.NerdsPag
 {
@@ -32,7 +30,15 @@ namespace NerdStore.Enterprise.Pagamento.NerdsPag
 
             var encryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
 
-            throw new NotImplementedException();
+            using var msEncrypt = new MemoryStream();
+            using var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write);
+
+            using (var swEncrypy = new StreamWriter(csEncrypt))
+            {
+                swEncrypy.Write(CardHolderName + CardNumber + CardExpirationDate + CardCvv);
+            }
+
+            return Encoding.ASCII.GetString(msEncrypt.ToArray());
         }
     }
 }

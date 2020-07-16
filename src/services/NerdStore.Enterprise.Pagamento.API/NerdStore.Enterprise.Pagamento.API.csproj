@@ -11,5 +11,12 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.10" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\building-blocks\NerdStore.Enterprise.Core\NerdStore.Enterprise.Core.csproj" />
+    <ProjectReference Include="..\..\building-blocks\NerdStore.Enterprise.MessageBus\NerdStore.Enterprise.MessageBus.csproj" />
+    <ProjectReference Include="..\..\building-blocks\NerdStore.Enterprise.WebAPI.Core\NerdStore.Enterprise.WebAPI.Core.csproj" />
+    <ProjectReference Include="..\NerdStore.Enterprise.Pagamento.NerdsPag\NerdStore.Enterprise.Pagamento.NerdsPag.csproj" />
+  </ItemGroup>
+
 
 </Project>
