@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using NerdStore.Enterprise.Pagamento.API.Data;
 using Microsoft.Extensions.DependencyInjection;
+using NerdStore.Enterprise.Pagamento.API.Facade;
 using NerdStore.Enterprise.WebAPI.Core.Identidade;
 
 namespace NerdStore.Enterprise.Pagamento.API.Configurations
@@ -15,6 +16,7 @@ namespace NerdStore.Enterprise.Pagamento.API.Configurations
         {
             services.AddDbContext<PagamentoContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
             services.AddCors(options => options.AddPolicy("Total", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+            services.Configure<PagamentoConfig>(configuration.GetSection("PagamentoConfig"));
             services.AddControllers();
         }
 
