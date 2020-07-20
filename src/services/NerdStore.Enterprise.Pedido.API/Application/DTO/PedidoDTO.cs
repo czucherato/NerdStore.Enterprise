@@ -7,6 +7,8 @@ namespace NerdStore.Enterprise.Pedido.API.Application.DTO
     {
         public Guid Id { get; set; }
 
+        public Guid ClienteId { get; set; }
+
         public int Codigo { get; set; }
 
         public int Status { get; set; }
@@ -30,6 +32,7 @@ namespace NerdStore.Enterprise.Pedido.API.Application.DTO
             var pedidoDTO = new PedidoDTO
             {
                 Id = pedido.Id,
+                ClienteId = pedido.ClienteId,
                 Codigo = pedido.Codigo,
                 Status = (int)pedido.PedidoStatus,
                 Data = pedido.DataCadastro,
