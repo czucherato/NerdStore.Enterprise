@@ -31,9 +31,5 @@
     <ProjectReference Include="..\NerdStore.Enterprise.Pagamento.NerdsPag\NerdStore.Enterprise.Pagamento.NerdsPag.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 
 </Project>
