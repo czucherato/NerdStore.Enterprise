@@ -10,5 +10,7 @@ namespace NerdStore.Enterprise.Pedido.API.Application.Queries
         Task<PedidoDTO> ObterUltimoPedido(Guid clientId);
 
         Task<IEnumerable<PedidoDTO>> ObterListaPorClienteId(Guid clienteId);
+
+        Task<PedidoDTO> ObterPedidosAutorizados();
     }
 }
