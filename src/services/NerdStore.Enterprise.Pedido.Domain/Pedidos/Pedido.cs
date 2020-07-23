@@ -94,5 +94,15 @@ namespace NerdStore.Enterprise.Pedido.Domain.Pedidos
             ValorTotal = valor < 0 ? 0 : valor;
             Desconto = desconto;
         }
+
+        public void FinalizarPedido()
+        {
+            PedidoStatus = PedidoStatus.Pago;
+        }
+
+        public void CancelarPedido()
+        {
+            PedidoStatus = PedidoStatus.Cancelado;
+        }
     }
 }
