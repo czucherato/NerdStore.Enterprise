@@ -130,6 +130,40 @@ namespace NerdStore.Enterprise.Pagamento.NerdsPag
             return Task.FromResult(transaction);
         }
 
+        public Task<Transaction> CaptureCardTransaction()
+        {
+            var transaction = new Transaction
+            {
+                AuthorizationCode = GetGenericCode(),
+                CardBrand = CardBrand,
+                TransactionDate = DateTime.Now,
+                Costs = 0,
+                Amount = Amount,
+                Status = TransactionStatus.Paid,
+                Tid = Tid,
+                Nsu = Nsu
+            };
+
+            return Task.FromResult(transaction);
+        }
+
+        public Task<Transaction> CancelAuthorization()
+        {
+            var transaction = new Transaction
+            {
+                AuthorizationCode = "",
+                CardBrand = CardBrand,
+                TransactionDate = DateTime.Now,
+                Costs = 0,
+                Amount = Amount,
+                Status = TransactionStatus.Cancelled,
+                Tid = Tid,
+                Nsu = Nsu
+            };
+
+            return Task.FromResult(transaction);
+        }
+
         private string GetGenericCode()
         {
             return new string(Enumerable.Repeat("ABCDEFGHIJKLMNOTPQRSTUVXYZ0123456789", 100)
