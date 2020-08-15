@@ -1,10 +1,9 @@
-﻿using Microsoft.Extensions.Options;
-using NerdStore.Enterprise.WebApp.MVC.Extensions;
-using NerdStore.Enterprise.WebApp.MVC.Models;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using NerdStore.Enterprise.WebApp.MVC.Models;
+using NerdStore.Enterprise.WebApp.MVC.Extensions;
 
 namespace NerdStore.Enterprise.WebApp.MVC.Services
 {
@@ -20,11 +19,11 @@ namespace NerdStore.Enterprise.WebApp.MVC.Services
 
         private readonly HttpClient _httpClient;
 
-        public async Task<IEnumerable<ProdutoViewModel>> ObterTodos()
+        public async Task<PagedViewModel<ProdutoViewModel>> ObterTodos(int pageSize, int pageIndex, string query = null)
         {
-            var response = await _httpClient.GetAsync("/catalogo/produtos");
+            var response = await _httpClient.GetAsync($"/catalogo/produtos?ps={pageSize}&page={pageIndex}&q={query}");
             TratarErrosResponse(response);
-            return await DeserializarObjetoResponse<IEnumerable<ProdutoViewModel>>(response);
+            return await DeserializarObjetoResponse<PagedViewModel<ProdutoViewModel>>(response);
         }
 
         public async Task<ProdutoViewModel> ObterPorId(Guid id)
