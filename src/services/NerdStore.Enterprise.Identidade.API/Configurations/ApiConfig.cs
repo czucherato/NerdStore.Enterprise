@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using NerdStore.Enterprise.WebAPI.Core.Identidade;
+using Jwks.Manager.AspNetCore;
+using NerdStore.Enterprise.WebAPI.Core.Usuario;
 
 namespace NerdStore.Enterprise.Identidade.API.Configurations
 {
@@ -11,6 +13,7 @@ namespace NerdStore.Enterprise.Identidade.API.Configurations
         public static IServiceCollection AddApiConfiguration(this IServiceCollection services)
         {
             services.AddControllers();
+            services.AddScoped<IAspNetUser, AspNetUser>();
             return services;
         }
 
@@ -31,6 +34,9 @@ namespace NerdStore.Enterprise.Identidade.API.Configurations
             {
                 endpoints.MapControllers();
             });
+
+            //app.UseJwksDiscovery("/minha-chave");
+            app.UseJwksDiscovery();
 
             return app;
         }

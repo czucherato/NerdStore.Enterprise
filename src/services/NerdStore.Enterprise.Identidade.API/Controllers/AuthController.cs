@@ -13,6 +13,8 @@ using NerdStore.Enterprise.Identidade.API.Models;
 using NerdStore.Enterprise.WebAPI.Core.Identidade;
 using NerdStore.Enterprise.WebAPI.Core.Controllers;
 using NerdStore.Enterprise.Core.Messages.Integration;
+using NerdStore.Enterprise.WebAPI.Core.Usuario;
+using Jwks.Manager.Interfaces;
 
 namespace NerdStore.Enterprise.Identidade.API.Controllers
 {
@@ -21,20 +23,27 @@ namespace NerdStore.Enterprise.Identidade.API.Controllers
     {
         public AuthController(
             IMessageBus bus,
+            IAspNetUser user,
             IOptions<AppSettings> options,
+            IJsonWebKeySetService jwksService,
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager)
         {
             _bus = bus;
+            _user = user;
+            _jwksService = jwksService;
             _userManager = userManager;
             _appSettings = options.Value;
             _signInManager = signInManager;
         }
 
         private readonly IMessageBus _bus;
+        private readonly IAspNetUser _user;
         private readonly AppSettings _appSettings;
+        private readonly IJsonWebKeySetService _jwksService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        
 
         [HttpPost("nova-conta")]
         public async Task<ActionResult> Registrar(UsuarioRegistroViewModel parametros)
@@ -103,15 +112,16 @@ namespace NerdStore.Enterprise.Identidade.API.Controllers
             identityClaims.AddClaims(claims);
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var key = _jwksService.GetCurrent();
+
+            var currentIssuer = $"{_user.ObterHttpContext().Request.Scheme}://{_user.ObterHttpContext().Request.Host}";
 
             var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
             {
-                Issuer = _appSettings.Emissor,
-                Audience = _appSettings.ValidoEm,
+                Issuer = currentIssuer,
                 Subject = identityClaims,
-                Expires = DateTime.UtcNow.AddHours(_appSettings.ExpiracaoHoras),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = key
             });
 
             var encodedToken = tokenHandler.WriteToken(token);
