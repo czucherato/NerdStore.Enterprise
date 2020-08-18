@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Text;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Jwks.Manager.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using NerdStore.Enterprise.MessageBus;
+using NerdStore.Enterprise.WebAPI.Core.Usuario;
 using NerdStore.Enterprise.Identidade.API.Models;
-using NerdStore.Enterprise.WebAPI.Core.Identidade;
 using NerdStore.Enterprise.WebAPI.Core.Controllers;
 using NerdStore.Enterprise.Core.Messages.Integration;
-using NerdStore.Enterprise.WebAPI.Core.Usuario;
-using Jwks.Manager.Interfaces;
 
 namespace NerdStore.Enterprise.Identidade.API.Controllers
 {
@@ -24,7 +21,6 @@ namespace NerdStore.Enterprise.Identidade.API.Controllers
         public AuthController(
             IMessageBus bus,
             IAspNetUser user,
-            IOptions<AppSettings> options,
             IJsonWebKeySetService jwksService,
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager)
@@ -33,13 +29,11 @@ namespace NerdStore.Enterprise.Identidade.API.Controllers
             _user = user;
             _jwksService = jwksService;
             _userManager = userManager;
-            _appSettings = options.Value;
             _signInManager = signInManager;
         }
 
         private readonly IMessageBus _bus;
         private readonly IAspNetUser _user;
-        private readonly AppSettings _appSettings;
         private readonly IJsonWebKeySetService _jwksService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
@@ -128,7 +122,7 @@ namespace NerdStore.Enterprise.Identidade.API.Controllers
             var response = new UsuarioRespostaLogin
             {
                 AccessToken = encodedToken,
-                ExpiresIn = TimeSpan.FromHours(_appSettings.ExpiracaoHoras).TotalSeconds,
+                ExpiresIn = TimeSpan.FromHours(1).TotalSeconds,
                 UsuarioToken = new UsuarioToken
                 {
                     Id = user.Id,

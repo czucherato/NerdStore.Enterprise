@@ -1,9 +1,8 @@
-﻿using System.Text;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using NerdStore.Enterprise.WebAPI.Core.Extensions.Security;
 
 namespace NerdStore.Enterprise.WebAPI.Core.Identidade
 {
@@ -15,7 +14,6 @@ namespace NerdStore.Enterprise.WebAPI.Core.Identidade
             services.Configure<AppSettings>(appSettingSection);
 
             var appSettings = appSettingSection.Get<AppSettings>();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
 
             services.AddAuthentication(options =>
             {
@@ -25,15 +23,7 @@ namespace NerdStore.Enterprise.WebAPI.Core.Identidade
             {
                 bearerOptions.RequireHttpsMetadata = true;
                 bearerOptions.SaveToken = true;
-                bearerOptions.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidAudience = appSettings.ValidoEm,
-                    ValidIssuer = appSettings.Emissor
-                };
+                bearerOptions.SetJwksOptions(new JwkOptions(appSettings.AutenticacaoJwksUrl));
             });
         }
 
