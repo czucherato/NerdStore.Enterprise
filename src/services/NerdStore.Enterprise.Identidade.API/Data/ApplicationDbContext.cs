@@ -1,6 +1,7 @@
 ﻿using Jwks.Manager;
 using Microsoft.EntityFrameworkCore;
 using Jwks.Manager.Store.EntityFrameworkCore;
+using NerdStore.Enterprise.Identidade.API.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace NerdStore.Enterprise.Identidade.API.Data
@@ -11,5 +12,7 @@ namespace NerdStore.Enterprise.Identidade.API.Data
             : base (options) {}
 
         public DbSet<SecurityKeyWithPrivate> SecurityKeys { get; set; }
+
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }
