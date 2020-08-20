@@ -61,7 +61,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NerdStore.Enterprise.Pedido
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NerdStore.Enterprise.Pedido.Infra", "src\services\NerdStore.Enterprise.Pedido.Infra\NerdStore.Enterprise.Pedido.Infra.csproj", "{E0DEBD7A-EF7A-4D98-A000-00935A9BBC10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdStore.Enterprise.Pagamento.NerdsPag", "src\services\NerdStore.Enterprise.Pagamento.NerdsPag\NerdStore.Enterprise.Pagamento.NerdsPag.csproj", "{B40A6E94-BD52-4797-BCC1-31BA61539BF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NerdStore.Enterprise.Pagamento.NerdsPag", "src\services\NerdStore.Enterprise.Pagamento.NerdsPag\NerdStore.Enterprise.Pagamento.NerdsPag.csproj", "{B40A6E94-BD52-4797-BCC1-31BA61539BF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

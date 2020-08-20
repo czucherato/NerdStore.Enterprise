@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using NerdStore.Enterprise.Carrinho.API.Data;
 using Microsoft.Extensions.DependencyInjection;
 using NerdStore.Enterprise.WebAPI.Core.Identidade;
+using NerdStore.Enterprise.Carrinho.API.Services.gRPC;
 
 namespace NerdStore.Enterprise.Carrinho.API.Configurations
 {
@@ -16,6 +17,7 @@ namespace NerdStore.Enterprise.Carrinho.API.Configurations
             services.AddDbContext<CarrinhoContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
             services.AddCors(options => options.AddPolicy("Total", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
             services.AddControllers();
+            services.AddGrpc();
         }
 
         public static void UseApiConfiguration(this IApplicationBuilder app, IWebHostEnvironment env)
@@ -25,7 +27,11 @@ namespace NerdStore.Enterprise.Carrinho.API.Configurations
             app.UseRouting();
             app.UseAuthConfiguration();
             app.UseCors("Total");
-            app.UseEndpoints(endPoints => endPoints.MapControllers());
+            app.UseEndpoints(endPoints => 
+            {
+                endPoints.MapControllers();
+                endPoints.MapGrpcService<CarrinhoGrpcService>().RequireCors("Total");
+            });
         }
     }
 }
