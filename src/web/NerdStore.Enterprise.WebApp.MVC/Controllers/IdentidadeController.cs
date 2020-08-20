@@ -1,9 +1,5 @@
-﻿using System;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication;
 using NerdStore.Enterprise.WebApp.MVC.Models;
 using NerdStore.Enterprise.WebApp.MVC.Services;
@@ -36,7 +32,7 @@ namespace NerdStore.Enterprise.WebApp.MVC.Controllers
             var resposta = await _autenticacaoService.Registro(parametros);
             if (ResponsePossuiErros(resposta.ResponseResult)) return View(parametros);
 
-            await RealizarLogin(resposta);
+            await _autenticacaoService.RealizarLogin(resposta);
             return RedirectToAction("Index", "Catalogo");
         }
 
@@ -58,7 +54,7 @@ namespace NerdStore.Enterprise.WebApp.MVC.Controllers
             var resposta = await _autenticacaoService.Login(parametros);
             if (ResponsePossuiErros(resposta.ResponseResult)) return View(parametros);
 
-            await RealizarLogin(resposta);
+            await _autenticacaoService.RealizarLogin(resposta);
 
             if (string.IsNullOrEmpty(returnUrl)) return RedirectToAction("Index", "Catalogo");
             return LocalRedirect(returnUrl);
@@ -70,30 +66,6 @@ namespace NerdStore.Enterprise.WebApp.MVC.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Identidade");
-        }
-
-        private async Task RealizarLogin(UsuarioRespostaLogin usuario)
-        {
-            var token = ObterJwtToken(usuario.AccessToken);
-            var claims = new List<Claim>
-            {
-                new Claim("JWT", usuario.AccessToken)
-            };
-            claims.AddRange(token.Claims);
-
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var authProperties = new AuthenticationProperties
-            {
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(60),
-                IsPersistent = true
-            };
-
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-        }
-
-        private static JwtSecurityToken ObterJwtToken(string jwtToken)
-        {
-            return new JwtSecurityTokenHandler().ReadToken(jwtToken) as JwtSecurityToken;
         }
     }
 }

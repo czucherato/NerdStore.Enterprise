@@ -1,8 +1,9 @@
 ﻿using Refit;
 using System.Net;
+using Polly.CircuitBreaker;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Polly.CircuitBreaker;
+using NerdStore.Enterprise.WebApp.MVC.Services;
 
 namespace NerdStore.Enterprise.WebApp.MVC.Extensions
 {
@@ -15,8 +16,12 @@ namespace NerdStore.Enterprise.WebApp.MVC.Extensions
 
         private readonly RequestDelegate _next;
 
-        public async Task InvokeAsync(HttpContext context)
+        private static IAutenticacaoService _autenticacaoService;
+
+        public async Task InvokeAsync(HttpContext context, IAutenticacaoService autenticacaoService)
         {
+            _autenticacaoService = autenticacaoService;
+
             try { await _next(context); }
             catch (CustomHttpRequestException ex) 
             { 
@@ -40,6 +45,16 @@ namespace NerdStore.Enterprise.WebApp.MVC.Extensions
         {
             if (statusCode == HttpStatusCode.Unauthorized)
             {
+                if (_autenticacaoService.TokenExpirado())
+                {
+                    if (_autenticacaoService.RefreshTokenValido().Result)
+                    {
+                        context.Response.Redirect(context.Request.Path);
+                        return;
+                    }
+                }
+
+                _autenticacaoService.Logout();
                 context.Response.Redirect($"/login?ReturnUrl={context.Request.Path}");
                 return;
             }

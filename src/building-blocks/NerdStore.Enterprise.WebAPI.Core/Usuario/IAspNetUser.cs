@@ -15,6 +15,8 @@ namespace NerdStore.Enterprise.WebAPI.Core.Usuario
 
         string ObterUserToken();
 
+        string ObterUserRefreshToken();
+
         bool EstaAutenticado();
 
         bool PossuiRole(string role);
