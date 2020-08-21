@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using NerdStore.Enterprise.BFF.Compras.Models;
 using NerdStore.Enterprise.BFF.Compras.Services;
 using NerdStore.Enterprise.WebAPI.Core.Controllers;
+using NerdStore.Enterprise.BFF.Compras.Services.gRPC;
 
 namespace NerdStore.Enterprise.BFF.Compras.Controllers
 {
@@ -15,29 +16,32 @@ namespace NerdStore.Enterprise.BFF.Compras.Controllers
         public CarrinhoController(
             IPedidoService pedidoService,
             ICatalogoService catalogoService, 
-            ICarrinhoService carrinhoService)
+            ICarrinhoService carrinhoService,
+            ICarrinhoGrpcService carrinhoGrpcService)
         {
             _pedidoService = pedidoService;
             _catalogoService = catalogoService;
             _carrinhoService = carrinhoService;
+            _carrinhoGrpcService = carrinhoGrpcService;
         }
 
         private readonly IPedidoService _pedidoService;
         private readonly ICatalogoService _catalogoService;
         private readonly ICarrinhoService _carrinhoService;
+        private readonly ICarrinhoGrpcService _carrinhoGrpcService;
 
         [HttpGet]
         [Route("compras/carrinho")]
         public async Task<IActionResult> Index()
         {
-            return CustomResponse(await _carrinhoService.ObterCarrinho());
+            return CustomResponse(await _carrinhoGrpcService.ObterCarrinho());
         }
 
         [HttpGet]
         [Route("compras/carrinho-quantidade")]
         public async Task<int> ObterQuantidadeCarrinho()
         {
-            var quantidade = await _carrinhoService.ObterCarrinho();
+            var quantidade = await _carrinhoGrpcService.ObterCarrinho();
             return quantidade?.Itens.Sum(i => i.Quantidade) ?? 0;
         }
 

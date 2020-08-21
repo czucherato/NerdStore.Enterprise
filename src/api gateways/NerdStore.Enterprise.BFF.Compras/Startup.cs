@@ -34,6 +34,7 @@ namespace NerdStore.Enterprise.BFF.Compras
             services.AddApiConfiguration(Configuration);
             services.AddJwtConfiguration(Configuration);
             services.AddSwaggerConfiguration();
+            services.ConfigureGrpcServices(Configuration);
             services.RegisterServices();
         }
 
