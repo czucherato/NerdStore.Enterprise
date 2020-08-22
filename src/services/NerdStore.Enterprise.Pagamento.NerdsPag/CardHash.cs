@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Text;
 using System.Security.Cryptography;
+using System;
 
 namespace NerdStore.Enterprise.Pagamento.NerdsPag
 {
@@ -28,14 +29,14 @@ namespace NerdStore.Enterprise.Pagamento.NerdsPag
             aesAlg.IV = Encoding.Default.GetBytes(_nerdsPagService.EncryptionKey);
             aesAlg.Key = Encoding.Default.GetBytes(_nerdsPagService.ApiKey);
 
-            var encryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+            var encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 
             using var msEncrypt = new MemoryStream();
             using var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write);
 
-            using (var swEncrypy = new StreamWriter(csEncrypt))
+            using (var swEncrypt = new StreamWriter(csEncrypt))
             {
-                swEncrypy.Write(CardHolderName + CardNumber + CardExpirationDate + CardCvv);
+                swEncrypt.Write(CardHolderName + CardNumber + CardExpirationDate + CardCvv);
             }
 
             return Encoding.ASCII.GetString(msEncrypt.ToArray());

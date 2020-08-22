@@ -8,11 +8,8 @@ namespace NerdStore.Enterprise.Identidade.API.Data
 {
     public class ApplicationDbContext : IdentityDbContext, ISecurityKeyContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base (options) {}
-
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         public DbSet<SecurityKeyWithPrivate> SecurityKeys { get; set; }
-
         public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }
