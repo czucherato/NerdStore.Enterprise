@@ -5,10 +5,10 @@ namespace NerdStore.Enterprise.Core.Messages.Integration
 {
     public class PedidoAutorizadoIntegrationEvent : IntegrationEvent
     {
-        public PedidoAutorizadoIntegrationEvent(Guid clienteId, Guid produtoId, IDictionary<Guid, int> itens)
+        public PedidoAutorizadoIntegrationEvent(Guid clienteId, Guid pedidoId, IDictionary<Guid, int> itens)
         {
             ClienteId = clienteId;
-            PedidoId = produtoId;
+            PedidoId = pedidoId;
             Itens = itens;
         }
 

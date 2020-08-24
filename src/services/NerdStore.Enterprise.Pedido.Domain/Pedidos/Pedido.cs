@@ -12,6 +12,7 @@ namespace NerdStore.Enterprise.Pedido.Domain.Pedidos
 
         public Pedido(Guid clienteId, decimal valorTotal, List<PedidoItem> pedidoItems, bool voucherUtilizado = false, decimal desconto = 0, Guid? voucherId = null)
         {
+            Id = Guid.NewGuid();
             ClienteId = clienteId;
             VoucherUtilizado = voucherUtilizado;
             Desconto = desconto;
