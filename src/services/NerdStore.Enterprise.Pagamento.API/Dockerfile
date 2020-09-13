@@ -7,10 +7,13 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["src/services/NerdStore.Enterprise.Pagamento.API/NerdStore.Enterprise.Pagamento.API.csproj", "src/services/NerdStore.Enterprise.Pagamento.API/"]
-RUN dotnet restore "src/services/NerdStore.Enterprise.Pagamento.API/NerdStore.Enterprise.Pagamento.API.csproj"
+COPY ["./services/NerdStore.Enterprise.Pagamento.API/NerdStore.Enterprise.Pagamento.API.csproj", "services/NerdStore.Enterprise.Pagamento.API/"]
+COPY ["./building-blocks/NerdStore.Enterprise.Core/NerdStore.Enterprise.Core.csproj", "building-blocks/NerdStore.Enterprise.Core/"]
+COPY ["./building-blocks/NerdStore.Enterprise.WebAPI.Core/NerdStore.Enterprise.WebAPI.Core.csproj", "building-blocks/NerdStore.Enterprise.WebAPI.Core/"]
+COPY ["./building-blocks/NerdStore.Enterprise.MessageBus/NerdStore.Enterprise.MessageBus.csproj", "building-blocks/NerdStore.Enterprise.MessageBus/"]
+RUN dotnet restore "services/NerdStore.Enterprise.Pagamento.API/NerdStore.Enterprise.Pagamento.API.csproj"
 COPY . .
-WORKDIR "/src/src/services/NerdStore.Enterprise.Pagamento.API"
+WORKDIR "services/NerdStore.Enterprise.Pagamento.API"
 RUN dotnet build "NerdStore.Enterprise.Pagamento.API.csproj" -c Release -o /app/build
 
 FROM build AS publish

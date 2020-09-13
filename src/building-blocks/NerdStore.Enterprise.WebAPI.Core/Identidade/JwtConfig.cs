@@ -21,7 +21,7 @@ namespace NerdStore.Enterprise.WebAPI.Core.Identidade
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(bearerOptions =>
             {
-                bearerOptions.RequireHttpsMetadata = true;
+                bearerOptions.RequireHttpsMetadata = false;
                 bearerOptions.SaveToken = true;
                 bearerOptions.SetJwksOptions(new JwkOptions(appSettings.AutenticacaoJwksUrl));
             });

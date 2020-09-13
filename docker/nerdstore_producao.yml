@@ -1,0 +1,144 @@
+version: "3"
+services:
+
+    rabbitmq:
+        image: rabbitmq:3-management
+        container_name: rabbit-nerdstore
+        environment:
+            RABBITMQ_DEFAULT_USER: "nerdstore"
+            RABBITMQ_DEFAULT_PASS: "nerdstore"
+
+    sql-server:
+        image: czucherato/nerdstore-sql-server:latest
+        container_name: nerdstore-sql-server
+        build:
+            context: ../sql
+            dockerfile: ./Dockerfile
+        environment:
+            SA_PASSWORD: "MeuDB@123"
+            ACCEPT_EULA: "Y"
+
+    web-mvc:
+        image: czucherato/nerdstore-web-mvc-ecommerce:latest
+        container_name: nerdstore-web-mvc-ecommerce
+        build:
+            context: ../src
+            dockerfile: ./web/NerdStore.Enterprise.WebApp.MVC/Dockerfile
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
+            - ASPNETCORE_URLS=http://*:5001
+        depends_on:
+            - api-catalogo
+            - api-identidade
+            - api-cliente
+            - api-bff-compras
+
+    api-identidade:
+        image: czucherato/nerdstore-api-identidade:latest
+        container_name: nerdstore-api-identidade
+        build:
+            context: ../src
+            dockerfile: ./services/NerdStore.Enterprise.Identidade.API/Dockerfile
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
+            - ASPNETCORE_URLS=http://*:5101
+        depends_on:
+            - rabbitmq
+            - sql-server
+
+    api-carrinho:
+        image: czucherato/nerdstore-api-carrinho:latest
+        container_name: nerdstore-api-carrinho
+        build:
+            context: ../src
+            dockerfile: ./services/NerdStore.Enterprise.Carrinho.API/Dockerfile
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
+            - ASPNETCORE_URLS=http://*:5201
+        depends_on:
+            - rabbitmq
+            - api-identidade
+            - sql-server
+
+    api-catalogo:
+        image: czucherato/nerdstore-api-catalogo:latest
+        container_name: nerdstore-api-catalogo
+        build:
+            context: ../src
+            dockerfile: ./services/NerdStore.Enterprise.Catalogo.API/Dockerfile
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
+            - ASPNETCORE_URLS=http://*:5301
+        depends_on:
+            - rabbitmq
+            - sql-server
+
+    api-cliente:
+        image: czucherato/nerdstore-api-cliente:latest
+        container_name: nerdstore-api-cliente
+        build:
+            context: ../src
+            dockerfile: ./services/NerdStore.Enterprise.Cliente.API/Dockerfile
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
+            - ASPNETCORE_URLS=http://*:5401
+        depends_on:
+            - rabbitmq
+            - api-identidade
+            - sql-server
+
+    api-bff-compras:
+        image: czucherato/nerdstore-api-bff-compras:latest
+        container_name: nerdstore-api-bff-compras
+        build:
+            context: ../src
+            dockerfile: ./api gateways/NerdStore.Enterprise.BFF.Compras/Dockerfile
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
+            - ASPNETCORE_URLS=http://*:5501
+        depends_on:
+            - rabbitmq
+            - api-identidade
+            - api-carrinho
+            - api-pagamento
+    
+    api-pagamento:
+        image: czucherato/nerdstore-api-pagamento:latest
+        container_name: nerdstore-api-pagamento
+        build:
+            context: ../src
+            dockerfile: ./services/NerdStore.Enterprise.Pagamento.API/Dockerfile
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
+            - ASPNETCORE_URLS=http://*:5601
+        depends_on:
+            - rabbitmq
+            - api-identidade
+            - api-pedido
+            - sql-server
+    
+    api-pedido:
+        image: czucherato/nerdstore-api-pedido:latest
+        container_name: nerdstore-api-pedido
+        build:
+            context: ../src
+            dockerfile: ./services/NerdStore.Enterprise.Pedido.API/Dockerfile
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
+            - ASPNETCORE_URLS=http://*:5701
+        depends_on:
+            - rabbitmq
+            - api-identidade
+            - sql-server
+
+    nerdstore-server:
+        image: czucherato/nerdstore-server:latest
+        container_name: nerdstore-server
+        build:
+            context: ./
+            dockerfile: ./nginx/Dockerfile
+        ports:
+            - "80:80"
+            - "443:443"
+        depends_on:
+            - web-mvc
