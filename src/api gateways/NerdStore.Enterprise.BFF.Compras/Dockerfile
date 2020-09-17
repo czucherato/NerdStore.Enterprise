@@ -10,7 +10,7 @@ WORKDIR /src
 COPY ["./api gateways/NerdStore.Enterprise.BFF.Compras/NerdStore.Enterprise.BFF.Compras.csproj", "api gateways/NerdStore.Enterprise.BFF.Compras/"]
 COPY ["./building-blocks/NerdStore.Enterprise.Core/NerdStore.Enterprise.Core.csproj", "building-blocks/NerdStore.Enterprise.Core/"]
 COPY ["./building-blocks/NerdStore.Enterprise.WebAPI.Core/NerdStore.Enterprise.WebAPI.Core.csproj", "building-blocks/NerdStore.Enterprise.WebAPI.Core/"]
-RUN dotnet restore "src/api gateways/NerdStore.Enterprise.BFF.Compras/NerdStore.Enterprise.BFF.Compras.csproj"
+RUN dotnet restore "api gateways/NerdStore.Enterprise.BFF.Compras/NerdStore.Enterprise.BFF.Compras.csproj"
 COPY . .
 WORKDIR "api gateways/NerdStore.Enterprise.BFF.Compras"
 RUN dotnet build "NerdStore.Enterprise.BFF.Compras.csproj" -c Release -o /app/build
