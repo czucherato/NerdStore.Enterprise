@@ -25,10 +25,11 @@ services:
 
     web-mvc:
         image: czucherato/nerdstore-web-mvc-ecommerce:latest
-        container_name: nerdstore-web-mvc-ecommerce
+        # container_name: nerdstore-web-mvc-ecommerce
         build:
             context: ../src
             dockerfile: ./web/NerdStore.Enterprise.WebApp.MVC/Dockerfile
+        restart: always
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
             - ASPNETCORE_URLS=https://+:5001;http://+:5002
@@ -36,6 +37,7 @@ services:
             - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/nerdstore-certificate.pfx
         volumes:
             - ./certs:/https:ro
+            - dpkeys:/var/data_protection_keys/
         ports:
             - "5001:5001"
         depends_on:
@@ -50,6 +52,7 @@ services:
         build:
             context: ../src
             dockerfile: ./services/NerdStore.Enterprise.Identidade.API/Dockerfile
+        restart: always
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
             - ASPNETCORE_URLS=https://+:5101;http://+:5102
@@ -69,6 +72,7 @@ services:
         build:
             context: ../src
             dockerfile: ./services/NerdStore.Enterprise.Carrinho.API/Dockerfile
+        restart: always
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
             - ASPNETCORE_URLS=https://+:5201;http://+:5202
@@ -89,6 +93,7 @@ services:
         build:
             context: ../src
             dockerfile: ./services/NerdStore.Enterprise.Catalogo.API/Dockerfile
+        restart: always
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
             - ASPNETCORE_URLS=https://+:5301;http://+:5302
@@ -109,6 +114,7 @@ services:
         build:
             context: ../src
             dockerfile: ./services/NerdStore.Enterprise.Cliente.API/Dockerfile
+        restart: always
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
             - ASPNETCORE_URLS=https://+:5401;http://+:5402
@@ -129,6 +135,7 @@ services:
         build:
             context: ../src
             dockerfile: ./api gateways/NerdStore.Enterprise.BFF.Compras/Dockerfile
+        restart: always
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
             - ASPNETCORE_URLS=https://+:5501;http://+:5502
@@ -151,6 +158,7 @@ services:
         build:
             context: ../src
             dockerfile: ./services/NerdStore.Enterprise.Pagamento.API/Dockerfile
+        restart: always
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
             - ASPNETCORE_URLS=https://+:5601;http://+:5602
@@ -172,6 +180,7 @@ services:
         build:
             context: ../src
             dockerfile: ./services/NerdStore.Enterprise.Pedido.API/Dockerfile
+        restart: always
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
             - ASPNETCORE_URLS=https://+:5701;http://+:5702
@@ -197,3 +206,6 @@ services:
             - "443:443"
         depends_on:
             - web-mvc
+
+volumes:
+    dpkeys:

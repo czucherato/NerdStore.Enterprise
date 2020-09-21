@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using NerdStore.Enterprise.WebApp.MVC.Extensions;
 
@@ -14,6 +15,7 @@ namespace NerdStore.Enterprise.WebApp.MVC.Configurations
     {
         public static void AddMvcConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddDataProtection().PersistKeysToFileSystem(new System.IO.DirectoryInfo(@"/var/data_protection_keys/")).SetApplicationName("NerdStoreEnterprise");
             services.AddControllersWithViews();
             services.Configure<AppSettings>(configuration);
             services.Configure<ForwardedHeadersOptions>(options =>
