@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NerdStore.Enterprise.WebAPI.Core.Extensions;
 using NerdStore.Enterprise.BFF.Compras.Services.gRPC;
 using NerdStore.Enterprise.Carrinho.API.Services.gRPC;
 
@@ -15,7 +16,9 @@ namespace NerdStore.Enterprise.BFF.Compras.Configurations
             services.AddGrpcClient<CarrinhoCompras.CarrinhoComprasClient>(options =>
             {
                 options.Address = new Uri(configuration["CarrinhoUrl"]);
-            }).AddInterceptor<GrpcServiceInterceptor>();
+            })
+                .AllowSelfSignedCertificate()
+                .AddInterceptor<GrpcServiceInterceptor>();
         }
     }
 }

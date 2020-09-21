@@ -25,23 +25,27 @@ namespace NerdStore.Enterprise.WebApp.MVC.Configurations
             services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
 
             services.AddHttpClient<IAutenticacaoService, AutenticacaoService>()
+                .AllowSelfSignedCertificate()
                 .AddPolicyHandler(PollyExtensions.EsperarTentar())
                 .AddTransientHttpErrorPolicy(
                     p => p.CircuitBreakerAsync(1, TimeSpan.FromSeconds(30)));
 
             services.AddHttpClient<ICatalogoService, CatalogoService>()
+                .AllowSelfSignedCertificate()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                 .AddPolicyHandler(PollyExtensions.EsperarTentar())
                 .AddTransientHttpErrorPolicy(
                     p => p.CircuitBreakerAsync(1, TimeSpan.FromSeconds(30)));
 
             services.AddHttpClient<IComprasBffService, ComprasBffService>()
+                .AllowSelfSignedCertificate()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                 .AddPolicyHandler(PollyExtensions.EsperarTentar())
                 .AddTransientHttpErrorPolicy(
                     p => p.CircuitBreakerAsync(1, TimeSpan.FromSeconds(30)));
 
             services.AddHttpClient<IClienteService, ClienteService>()
+                .AllowSelfSignedCertificate()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                 .AddPolicyHandler(PollyExtensions.EsperarTentar())
                 .AddTransientHttpErrorPolicy(
