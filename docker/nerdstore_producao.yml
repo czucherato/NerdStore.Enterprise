@@ -1,12 +1,10 @@
 version: "3"
+
 services:
 
     rabbitmq:
         image: rabbitmq:3-management
         container_name: rabbit-nerdstore
-        ports:
-            - "5675:5672"
-            - "15675:15672"
         environment:
             RABBITMQ_DEFAULT_USER: "nerdstore"
             RABBITMQ_DEFAULT_PASS: "nerdstore"
@@ -14,32 +12,27 @@ services:
     sql-server:
         image: czucherato/nerdstore-sql-server:latest
         container_name: nerdstore-sql-server
-        build:
+        build: 
             context: ../sql
             dockerfile: ./Dockerfile
         ports:
             - "1433:1433"
         environment:
             SA_PASSWORD: "MeuDB@123"
-            ACCEPT_EULA: "Y"
+            ACCEPT_EULA: "Y"     
 
     web-mvc:
         image: czucherato/nerdstore-web-mvc-ecommerce:latest
-        container_name: nerdstore-web-mvc-ecommerce
+        #container_name: nerdstore-web-mvc-ecommerce
         build:
             context: ../src
-            dockerfile: ./web/NerdStore.Enterprise.WebApp.MVC/Dockerfile
-        # restart: always
+            dockerfile: ./web/Nerdstore.Enterprise.WebApp.MVC/Dockerfile
+        restart: always            
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=https://+:5001;http://+:5002
-            - ASPNETCORE_Kestrel__Certificates__Default__Password=nerdstore
-            - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/nerdstore-certificate.pfx
-        volumes:
-            - ./certs:/https:ro
-            # - dpkeys:/var/data_protection_keys/
-        ports:
-            - "5001:5001"
+            - ASPNETCORE_URLS=http://*:5001
+        volumes: 
+            - dpkeys:/var/data_protection_keys/         
         depends_on:
             - api-catalogo
             - api-identidade
@@ -48,97 +41,88 @@ services:
 
     api-identidade:
         image: czucherato/nerdstore-api-identidade:latest
-        container_name: nerdstore-api-identidade
-        build:
+        container_name: nerdstore-api-identidade    
+        build: 
             context: ../src
-            dockerfile: ./services/NerdStore.Enterprise.Identidade.API/Dockerfile
-        # restart: always
-        environment:
+            dockerfile: ./services/Nerdstore.Enterprise.Identidade.API/Dockerfile  
+        restart: always    
+        environment: 
             - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=https://+:5101;http://+:5102
+            - ASPNETCORE_URLS=https://+:5101;http://+5102
             - ASPNETCORE_Kestrel__Certificates__Default__Password=nerdstore
             - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/nerdstore-certificate.pfx
         volumes:
             - ./certs:/https:ro
-        ports:
-            - "5101:5101"
         depends_on:
             - rabbitmq
             - sql-server
-
+            
     api-carrinho:
         image: czucherato/nerdstore-api-carrinho:latest
         container_name: nerdstore-api-carrinho
-        build:
+        build: 
             context: ../src
-            dockerfile: ./services/NerdStore.Enterprise.Carrinho.API/Dockerfile
-        # restart: always
-        environment:
+            dockerfile: ./services/Nerdstore.Enterprise.Carrinho.API/Dockerfile      
+        restart: always             
+        environment: 
             - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=https://+:5201;http://+:5202
+            - ASPNETCORE_URLS=https://+:5201;http://+5202
             - ASPNETCORE_Kestrel__Certificates__Default__Password=nerdstore
             - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/nerdstore-certificate.pfx
         volumes:
             - ./certs:/https:ro
-        ports:
-            - "5201:5201"
         depends_on:
             - rabbitmq
             - api-identidade
-            - sql-server
+            - sql-server         
 
     api-catalogo:
         image: czucherato/nerdstore-api-catalogo:latest
         container_name: nerdstore-api-catalogo
-        build:
+        build: 
             context: ../src
-            dockerfile: ./services/NerdStore.Enterprise.Catalogo.API/Dockerfile
-        # restart: always
-        environment:
+            dockerfile: ./services/Nerdstore.Enterprise.Catalogo.API/Dockerfile
+        restart: always 
+        environment: 
             - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=https://+:5301;http://+:5302
+            - ASPNETCORE_URLS=https://+:5301;http://+5302
             - ASPNETCORE_Kestrel__Certificates__Default__Password=nerdstore
             - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/nerdstore-certificate.pfx
         volumes:
             - ./certs:/https:ro
-        ports:
-            - "5301:5301"
         depends_on:
             - rabbitmq
             - sql-server
-            - api-identidade
 
     api-cliente:
         image: czucherato/nerdstore-api-cliente:latest
-        container_name: nerdstore-api-cliente
-        build:
+        container_name: nerdstore-api-cliente    
+        build: 
             context: ../src
-            dockerfile: ./services/NerdStore.Enterprise.Cliente.API/Dockerfile
-        # restart: always
-        environment:
+            dockerfile: ./services/Nerdstore.Enterprise.Clientes.API/Dockerfile
+        restart: always 
+        environment: 
             - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=https://+:5401;http://+:5402
+            - ASPNETCORE_URLS=https://+:5401;http://+5402
             - ASPNETCORE_Kestrel__Certificates__Default__Password=nerdstore
             - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/nerdstore-certificate.pfx
         volumes:
             - ./certs:/https:ro
-        ports:
-            - "5401:5401"
         depends_on:
             - rabbitmq
             - api-identidade
-            - sql-server
+            - sql-server  
 
     api-bff-compras:
         image: czucherato/nerdstore-api-bff-compras:latest
         container_name: nerdstore-api-bff-compras
-        build:
+        build: 
             context: ../src
-            dockerfile: ./api gateways/NerdStore.Enterprise.BFF.Compras/Dockerfile
-        # restart: always
-        environment:
+            dockerfile: ./api gateways/Nerdstore.Enterprise.Bff.Compras/Dockerfile  
+        restart: always 
+        environment: 
             - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=https://+:5501;http://+:5502
+            - ASPNETCORE_URLS=https://+:5501;http://+5502
             - ASPNETCORE_Kestrel__Certificates__Default__Password=nerdstore
             - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/nerdstore-certificate.pfx
         volumes:
@@ -147,65 +131,60 @@ services:
             - rabbitmq
             - api-identidade
             - api-carrinho
-            - api-catalogo
             - api-pagamento
             - api-pedido
-            - api-cliente
-    
+            
     api-pagamento:
         image: czucherato/nerdstore-api-pagamento:latest
-        container_name: nerdstore-api-pagamento
-        build:
+        container_name: nerdstore-api-pagamento    
+        build: 
             context: ../src
-            dockerfile: ./services/NerdStore.Enterprise.Pagamento.API/Dockerfile
-        # restart: always
-        environment:
+            dockerfile: ./services/Nerdstore.Enterprise.Pagamentos.API/Dockerfile
+        restart: always    
+        environment: 
             - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=https://+:5601;http://+:5602
+            - ASPNETCORE_URLS=https://+:5601;http://+5602
             - ASPNETCORE_Kestrel__Certificates__Default__Password=nerdstore
             - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/nerdstore-certificate.pfx
         volumes:
             - ./certs:/https:ro
-        ports:
-            - "5601:5601"
         depends_on:
             - rabbitmq
             - api-identidade
             - api-pedido
             - sql-server
-    
+            
     api-pedido:
         image: czucherato/nerdstore-api-pedido:latest
-        container_name: nerdstore-api-pedido
-        build:
+        container_name: nerdstore-api-pedido    
+        build: 
             context: ../src
-            dockerfile: ./services/NerdStore.Enterprise.Pedido.API/Dockerfile
-        # restart: always
-        environment:
+            dockerfile: ./services/Nerdstore.Enterprise.Pedidos.API/Dockerfile 
+        restart: always             
+        environment: 
             - ASPNETCORE_ENVIRONMENT=Production
-            - ASPNETCORE_URLS=https://+:5701;http://+:5702
+            - ASPNETCORE_URLS=https://+:5701;http://+5702
             - ASPNETCORE_Kestrel__Certificates__Default__Password=nerdstore
             - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/nerdstore-certificate.pfx
         volumes:
             - ./certs:/https:ro
-        ports:
-            - "5701:5701"
         depends_on:
             - rabbitmq
-            - api-identidade
             - sql-server
+            - api-identidade                    
 
     nerdstore-server:
         image: czucherato/nerdstore-server:latest
-        container_name: nerdstore-server
-        build:
+        container_name: nerdstore-server    
+        build: 
             context: ./
-            dockerfile: ./nginx/Dockerfile
+            dockerfile: ./nginx/Dockerfile 
+        restart: always 
         ports:
             - "83:80"
             - "443:443"
         depends_on:
             - web-mvc
 
-# volumes:
-#     dpkeys:
+volumes:
+    dpkeys:     
